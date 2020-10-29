@@ -1,18 +1,7 @@
-# PyQt5 Modules
-from PyQt5.QtWidgets import QApplication
-
-
-# Project Modules
-from src.slider import SliderWidget
-
+from src.mainwindow import *
 
 if __name__ == "__main__":
-    # Creando como es tipico la aplicacion/contexto
-    app = QApplication([])
-
-    # Instanciando el Widget a probar!
-    widget = SliderWidget()
-    widget.show()
-
-    # Ejecutando loop de eventos
-    app.exec()
+    app = QtWidgets.QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec_()

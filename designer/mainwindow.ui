@@ -6,25 +6,889 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>675</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
+  <property name="font">
+   <font>
+    <family>Rockwell</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Filter Design Tool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="Icon"/>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="mainFrame">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>1181</width>
+      <height>611</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="lineWidth">
+     <number>4</number>
+    </property>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1161</width>
+       <height>591</height>
+      </rect>
+     </property>
+     <widget class="QWidget" name="etapa1">
+      <widget class="QLabel" name="label_e1">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>131</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>24</pointsize>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Etapa 1</string>
+       </property>
+      </widget>
+      <widget class="QTabWidget" name="tabPlot1">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>0</y>
+         <width>751</width>
+         <height>591</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Atenuación</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Fase</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Retardo de Grupo</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_4">
+        <attribute name="title">
+         <string>Polos y Ceros</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_5">
+        <attribute name="title">
+         <string>Impulso</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_6">
+        <attribute name="title">
+         <string>Escalón</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tab_7">
+        <attribute name="title">
+         <string>Máximo Q</string>
+        </attribute>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="formLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>386</width>
+         <height>201</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+        <property name="formAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="horizontalSpacing">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_tipo">
+          <property name="text">
+           <string>Tipo de Filtro</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="combo_tipo">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::InsertAtBottom</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Pasa Bajos</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pasa Altos</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Pasa Banda</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rechaza Banda</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Retardo de Grupo</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_aprox">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Aproximación</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="combo_aprox">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <item>
+           <property name="text">
+            <string>Butterworth</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Chebyshev I</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Chebyshev II</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Bessel</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Cauer</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Legendre</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Gauss</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_desnorm">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Rango de Desnormalización</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="spin_desnom">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_minord">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Orden Mínimo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="spin_minord">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_maxord">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Orden Máximo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="spin_maxord">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_qmax">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Q  Máximo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="spin_qmax">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="label_params">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>50</y>
+         <width>171</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>18</pointsize>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Parámetros:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_plantilla">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>310</y>
+         <width>171</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>18</pointsize>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Plantilla:</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="formLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>350</y>
+         <width>371</width>
+         <height>161</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_2">
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+        <property name="formAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="horizontalSpacing">
+         <number>20</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_Ap">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Banda de paso (Ap)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_Aa">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Banda de atenuación (Aa)    </string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_wp">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωp</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_wa">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωa</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="spin_Ap">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="spin_Aa">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wp">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wa">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_wo">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωo</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wo">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="btn_plot">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>530</y>
+         <width>191</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="Button">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Base">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Window">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Highlight">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>200</red>
+             <green>200</green>
+             <blue>200</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="Button">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Base">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Window">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Highlight">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>200</red>
+             <green>200</green>
+             <blue>200</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="Button">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Base">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Window">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>240</red>
+             <green>240</green>
+             <blue>240</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Highlight">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>200</red>
+             <green>200</green>
+             <blue>200</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>-1</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(240, 240, 240);
+selection-background-color: rgb(200, 200, 200);
+border-style: outset;
+border-width: 5px;
+border-radius: 10px;
+border-color: gray;
+font: Rockwell;
+font-size: 24px;
+</string>
+       </property>
+       <property name="text">
+        <string>Graficar</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="etapa2">
+      <widget class="QLabel" name="label_e2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>131</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>24</pointsize>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Etapa 2</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btn_next">
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>630</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 240, 240);;
+border-style: outset;
+border-width: 5px;
+border-radius: 10px;
+border-color: gray;
+font: Rockwell;
+font-size: 24px;</string>
+    </property>
+    <property name="text">
+     <string>Siguiente</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_prev">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>630</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 240, 240);
+border-style: outset;
+border-width: 5px;
+border-radius: 10px;
+border-color: gray;
+font: Rockwell;
+font-size: 24px;</string>
+    </property>
+    <property name="text">
+     <string>Anterior</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_open">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>630</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 240, 240);
+border-style: outset;
+border-width: 5px;
+border-radius: 10px;
+border-color: gray;
+font: Rockwell;
+font-size: 24px;</string>
+    </property>
+    <property name="text">
+     <string>Abrir</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_save">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>630</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 240, 240);
+border-style: outset;
+border-width: 5px;
+border-radius: 10px;
+border-color: gray;
+font: Rockwell;
+font-size: 24px;</string>
+    </property>
+    <property name="text">
+     <string>Guardar</string>
+    </property>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>
