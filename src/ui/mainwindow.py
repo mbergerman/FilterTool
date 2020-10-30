@@ -49,38 +49,80 @@ class Ui_MainWindow(object):
         font.setUnderline(True)
         self.label_e1.setFont(font)
         self.label_e1.setObjectName("label_e1")
-        self.tabPlot1 = QtWidgets.QTabWidget(self.etapa1)
-        self.tabPlot1.setGeometry(QtCore.QRect(410, 0, 751, 591))
+        self.tabPlots = QtWidgets.QTabWidget(self.etapa1)
+        self.tabPlots.setGeometry(QtCore.QRect(410, 0, 751, 591))
         font = QtGui.QFont()
         font.setFamily("Rockwell")
         font.setPointSize(12)
         font.setBold(False)
         font.setWeight(50)
-        self.tabPlot1.setFont(font)
-        self.tabPlot1.setObjectName("tabPlot1")
-        self.tab = QtWidgets.QWidget()
-        self.tab.setObjectName("tab")
-        self.tabPlot1.addTab(self.tab, "")
+        self.tabPlots.setFont(font)
+        self.tabPlots.setObjectName("tabPlots")
+        self.tab_1 = QtWidgets.QWidget()
+        self.tab_1.setObjectName("tab_1")
+        self.verticalLayoutWidget = QtWidgets.QWidget(self.tab_1)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.plotlayout_1 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.plotlayout_1.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_1.setObjectName("plotlayout_1")
+        self.tabPlots.addTab(self.tab_1, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
-        self.tabPlot1.addTab(self.tab_2, "")
+        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.tab_2)
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
+        self.plotlayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
+        self.plotlayout_2.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_2.setObjectName("plotlayout_2")
+        self.tabPlots.addTab(self.tab_2, "")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
-        self.tabPlot1.addTab(self.tab_3, "")
+        self.verticalLayoutWidget_3 = QtWidgets.QWidget(self.tab_3)
+        self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
+        self.plotlayout_3 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_3)
+        self.plotlayout_3.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_3.setObjectName("plotlayout_3")
+        self.tabPlots.addTab(self.tab_3, "")
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
-        self.tabPlot1.addTab(self.tab_4, "")
+        self.verticalLayoutWidget_4 = QtWidgets.QWidget(self.tab_4)
+        self.verticalLayoutWidget_4.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_4.setObjectName("verticalLayoutWidget_4")
+        self.plotlayout_4 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_4)
+        self.plotlayout_4.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_4.setObjectName("plotlayout_4")
+        self.tabPlots.addTab(self.tab_4, "")
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
-        self.tabPlot1.addTab(self.tab_5, "")
+        self.verticalLayoutWidget_5 = QtWidgets.QWidget(self.tab_5)
+        self.verticalLayoutWidget_5.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_5.setObjectName("verticalLayoutWidget_5")
+        self.plotlayout_5 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_5)
+        self.plotlayout_5.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_5.setObjectName("plotlayout_5")
+        self.tabPlots.addTab(self.tab_5, "")
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
-        self.tabPlot1.addTab(self.tab_6, "")
+        self.verticalLayoutWidget_6 = QtWidgets.QWidget(self.tab_6)
+        self.verticalLayoutWidget_6.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_6.setObjectName("verticalLayoutWidget_6")
+        self.plotlayout_6 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_6)
+        self.plotlayout_6.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_6.setObjectName("plotlayout_6")
+        self.tabPlots.addTab(self.tab_6, "")
         self.tab_7 = QtWidgets.QWidget()
         self.tab_7.setObjectName("tab_7")
-        self.tabPlot1.addTab(self.tab_7, "")
+        self.verticalLayoutWidget_7 = QtWidgets.QWidget(self.tab_7)
+        self.verticalLayoutWidget_7.setGeometry(QtCore.QRect(0, 0, 751, 561))
+        self.verticalLayoutWidget_7.setObjectName("verticalLayoutWidget_7")
+        self.plotlayout_7 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_7)
+        self.plotlayout_7.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_7.setObjectName("plotlayout_7")
+        self.tabPlots.addTab(self.tab_7, "")
         self.formLayoutWidget = QtWidgets.QWidget(self.etapa1)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 90, 386, 201))
+        self.formLayoutWidget.setGeometry(QtCore.QRect(10, 90, 381, 201))
         self.formLayoutWidget.setObjectName("formLayoutWidget")
         self.formLayout = QtWidgets.QFormLayout(self.formLayoutWidget)
         self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)
@@ -199,7 +241,7 @@ class Ui_MainWindow(object):
         self.label_params.setFont(font)
         self.label_params.setObjectName("label_params")
         self.label_plantilla = QtWidgets.QLabel(self.etapa1)
-        self.label_plantilla.setGeometry(QtCore.QRect(10, 310, 171, 41))
+        self.label_plantilla.setGeometry(QtCore.QRect(10, 290, 171, 41))
         font = QtGui.QFont()
         font.setFamily("Rockwell")
         font.setPointSize(18)
@@ -207,7 +249,7 @@ class Ui_MainWindow(object):
         self.label_plantilla.setFont(font)
         self.label_plantilla.setObjectName("label_plantilla")
         self.formLayoutWidget_2 = QtWidgets.QWidget(self.etapa1)
-        self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 350, 371, 161))
+        self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 330, 385, 197))
         self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
         self.formLayout_2 = QtWidgets.QFormLayout(self.formLayoutWidget_2)
         self.formLayout_2.setLabelAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
@@ -305,6 +347,33 @@ class Ui_MainWindow(object):
         self.spin_wo.setProperty("value", 0.0)
         self.spin_wo.setObjectName("spin_wo")
         self.formLayout_2.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.spin_wo)
+        self.check_plantilla = QtWidgets.QCheckBox(self.formLayoutWidget_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.check_plantilla.sizePolicy().hasHeightForWidth())
+        self.check_plantilla.setSizePolicy(sizePolicy)
+        self.check_plantilla.setSizeIncrement(QtCore.QSize(0, 0))
+        self.check_plantilla.setBaseSize(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(12)
+        self.check_plantilla.setFont(font)
+        self.check_plantilla.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.check_plantilla.setAutoFillBackground(False)
+        self.check_plantilla.setStyleSheet("")
+        self.check_plantilla.setText("")
+        self.check_plantilla.setIconSize(QtCore.QSize(16, 16))
+        self.check_plantilla.setChecked(True)
+        self.check_plantilla.setObjectName("check_plantilla")
+        self.formLayout_2.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.check_plantilla)
+        self.label_check_plantilla = QtWidgets.QLabel(self.formLayoutWidget_2)
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(12)
+        self.label_check_plantilla.setFont(font)
+        self.label_check_plantilla.setObjectName("label_check_plantilla")
+        self.formLayout_2.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.label_check_plantilla)
         self.btn_plot = QtWidgets.QPushButton(self.etapa1)
         self.btn_plot.setGeometry(QtCore.QRect(100, 530, 191, 51))
         palette = QtGui.QPalette()
@@ -352,14 +421,22 @@ class Ui_MainWindow(object):
         font.setItalic(False)
         font.setWeight(50)
         self.btn_plot.setFont(font)
-        self.btn_plot.setStyleSheet("background-color: rgb(240, 240, 240);\n"
-"selection-background-color: rgb(200, 200, 200);\n"
-"border-style: outset;\n"
-"border-width: 5px;\n"
-"border-radius: 10px;\n"
-"border-color: gray;\n"
-"font: Rockwell;\n"
-"font-size: 24px;\n"
+        self.btn_plot.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 24px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
 "")
         self.btn_plot.setObjectName("btn_plot")
         self.stackedWidget.addWidget(self.etapa1)
@@ -373,64 +450,207 @@ class Ui_MainWindow(object):
         font.setUnderline(True)
         self.label_e2.setFont(font)
         self.label_e2.setObjectName("label_e2")
+        self.stage_list = QtWidgets.QListWidget(self.etapa2)
+        self.stage_list.setGeometry(QtCore.QRect(10, 120, 121, 291))
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(12)
+        self.stage_list.setFont(font)
+        self.stage_list.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.stage_list.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
+        self.stage_list.setDefaultDropAction(QtCore.Qt.MoveAction)
+        self.stage_list.setObjectName("stage_list")
+        self.label_stage_list = QtWidgets.QLabel(self.etapa2)
+        self.label_stage_list.setGeometry(QtCore.QRect(10, 60, 111, 51))
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(18)
+        font.setUnderline(True)
+        self.label_stage_list.setFont(font)
+        self.label_stage_list.setObjectName("label_stage_list")
+        self.verticalLayoutWidget_8 = QtWidgets.QWidget(self.etapa2)
+        self.verticalLayoutWidget_8.setGeometry(QtCore.QRect(150, 40, 1011, 551))
+        self.verticalLayoutWidget_8.setObjectName("verticalLayoutWidget_8")
+        self.plotlayout_poles = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_8)
+        self.plotlayout_poles.setContentsMargins(0, 0, 0, 0)
+        self.plotlayout_poles.setObjectName("plotlayout_poles")
+        self.label_diagrama = QtWidgets.QLabel(self.etapa2)
+        self.label_diagrama.setGeometry(QtCore.QRect(220, 10, 941, 21))
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(18)
+        font.setUnderline(True)
+        self.label_diagrama.setFont(font)
+        self.label_diagrama.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_diagrama.setObjectName("label_diagrama")
+        self.btn_new_stage = QtWidgets.QPushButton(self.etapa2)
+        self.btn_new_stage.setGeometry(QtCore.QRect(10, 490, 121, 41))
+        self.btn_new_stage.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 20px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
+        self.btn_new_stage.setObjectName("btn_new_stage")
+        self.btn_delete_stage = QtWidgets.QPushButton(self.etapa2)
+        self.btn_delete_stage.setGeometry(QtCore.QRect(10, 540, 121, 41))
+        self.btn_delete_stage.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 20px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
+        self.btn_delete_stage.setObjectName("btn_delete_stage")
+        self.formLayoutWidget_3 = QtWidgets.QWidget(self.etapa2)
+        self.formLayoutWidget_3.setGeometry(QtCore.QRect(10, 420, 121, 61))
+        self.formLayoutWidget_3.setObjectName("formLayoutWidget_3")
+        self.formLayout_3 = QtWidgets.QFormLayout(self.formLayoutWidget_3)
+        self.formLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.formLayout_3.setHorizontalSpacing(10)
+        self.formLayout_3.setObjectName("formLayout_3")
+        self.label_polo1 = QtWidgets.QLabel(self.formLayoutWidget_3)
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(12)
+        self.label_polo1.setFont(font)
+        self.label_polo1.setObjectName("label_polo1")
+        self.formLayout_3.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_polo1)
+        self.combo_polo1 = QtWidgets.QComboBox(self.formLayoutWidget_3)
+        self.combo_polo1.setObjectName("combo_polo1")
+        self.combo_polo1.addItem("")
+        self.formLayout_3.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.combo_polo1)
+        self.label_polo2 = QtWidgets.QLabel(self.formLayoutWidget_3)
+        font = QtGui.QFont()
+        font.setFamily("Rockwell")
+        font.setPointSize(12)
+        self.label_polo2.setFont(font)
+        self.label_polo2.setObjectName("label_polo2")
+        self.formLayout_3.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_polo2)
+        self.combo_polo2 = QtWidgets.QComboBox(self.formLayoutWidget_3)
+        self.combo_polo2.setObjectName("combo_polo2")
+        self.combo_polo2.addItem("")
+        self.formLayout_3.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.combo_polo2)
         self.stackedWidget.addWidget(self.etapa2)
         self.btn_next = QtWidgets.QPushButton(self.centralwidget)
         self.btn_next.setGeometry(QtCore.QRect(1060, 630, 121, 41))
-        self.btn_next.setStyleSheet("background-color: rgb(240, 240, 240);;\n"
-"border-style: outset;\n"
-"border-width: 5px;\n"
-"border-radius: 10px;\n"
-"border-color: gray;\n"
-"font: Rockwell;\n"
-"font-size: 24px;")
+        self.btn_next.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 24px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
         self.btn_next.setObjectName("btn_next")
         self.btn_prev = QtWidgets.QPushButton(self.centralwidget)
         self.btn_prev.setGeometry(QtCore.QRect(930, 630, 121, 41))
-        self.btn_prev.setStyleSheet("background-color: rgb(240, 240, 240);\n"
-"border-style: outset;\n"
-"border-width: 5px;\n"
-"border-radius: 10px;\n"
-"border-color: gray;\n"
-"font: Rockwell;\n"
-"font-size: 24px;")
+        self.btn_prev.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 24px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
         self.btn_prev.setObjectName("btn_prev")
         self.btn_open = QtWidgets.QPushButton(self.centralwidget)
         self.btn_open.setGeometry(QtCore.QRect(10, 630, 121, 41))
-        self.btn_open.setStyleSheet("background-color: rgb(240, 240, 240);\n"
-"border-style: outset;\n"
-"border-width: 5px;\n"
-"border-radius: 10px;\n"
-"border-color: gray;\n"
-"font: Rockwell;\n"
-"font-size: 24px;")
+        self.btn_open.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 24px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
         self.btn_open.setObjectName("btn_open")
         self.btn_save = QtWidgets.QPushButton(self.centralwidget)
         self.btn_save.setGeometry(QtCore.QRect(140, 630, 121, 41))
-        self.btn_save.setStyleSheet("background-color: rgb(240, 240, 240);\n"
-"border-style: outset;\n"
-"border-width: 5px;\n"
-"border-radius: 10px;\n"
-"border-color: gray;\n"
-"font: Rockwell;\n"
-"font-size: 24px;")
+        self.btn_save.setStyleSheet("QPushButton {\n"
+" background-color: rgb(240, 240, 240);\n"
+" border-style: outset;\n"
+" border-width: 5px;\n"
+" border-radius: 10px;\n"
+" border-color: gray;\n"
+" font: Rockwell;\n"
+" font-size: 24px;\n"
+" }\n"
+" QPushButton:pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" border-style: inset;\n"
+" }\n"
+" QPushButton:hover:!pressed {\n"
+" background-color: rgb(220, 220, 220);\n"
+" }\n"
+"")
         self.btn_save.setObjectName("btn_save")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.tabPlot1.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
+        self.tabPlots.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Filter Design Tool"))
         self.label_e1.setText(_translate("MainWindow", "Etapa 1"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab), _translate("MainWindow", "Atenuación"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_2), _translate("MainWindow", "Fase"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_3), _translate("MainWindow", "Retardo de Grupo"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_4), _translate("MainWindow", "Polos y Ceros"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_5), _translate("MainWindow", "Impulso"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_6), _translate("MainWindow", "Escalón"))
-        self.tabPlot1.setTabText(self.tabPlot1.indexOf(self.tab_7), _translate("MainWindow", "Máximo Q"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_1), _translate("MainWindow", "Atenuación"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_2), _translate("MainWindow", "Fase"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_3), _translate("MainWindow", "Retardo de Grupo"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_4), _translate("MainWindow", "Polos y Ceros"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_5), _translate("MainWindow", "Impulso"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_6), _translate("MainWindow", "Escalón"))
+        self.tabPlots.setTabText(self.tabPlots.indexOf(self.tab_7), _translate("MainWindow", "Máximo Q"))
         self.label_tipo.setText(_translate("MainWindow", "Tipo de Filtro"))
         self.combo_tipo.setItemText(0, _translate("MainWindow", "Pasa Bajos"))
         self.combo_tipo.setItemText(1, _translate("MainWindow", "Pasa Altos"))
@@ -456,8 +676,18 @@ class Ui_MainWindow(object):
         self.label_wp.setText(_translate("MainWindow", "Frecuencia ωp"))
         self.label_wa.setText(_translate("MainWindow", "Frecuencia ωa"))
         self.label_wo.setText(_translate("MainWindow", "Frecuencia ωo"))
+        self.label_check_plantilla.setText(_translate("MainWindow", "Visualizar Plantilla"))
         self.btn_plot.setText(_translate("MainWindow", "Graficar"))
         self.label_e2.setText(_translate("MainWindow", "Etapa 2"))
+        self.label_stage_list.setText(_translate("MainWindow", "Lista de\n"
+"Etapas:"))
+        self.label_diagrama.setText(_translate("MainWindow", "Diagrama de Polos y Ceros"))
+        self.btn_new_stage.setText(_translate("MainWindow", "Crear"))
+        self.btn_delete_stage.setText(_translate("MainWindow", "Borrar"))
+        self.label_polo1.setText(_translate("MainWindow", "Polo 1:"))
+        self.combo_polo1.setItemText(0, _translate("MainWindow", "-"))
+        self.label_polo2.setText(_translate("MainWindow", "Polo 2:"))
+        self.combo_polo2.setItemText(0, _translate("MainWindow", "-"))
         self.btn_next.setText(_translate("MainWindow", "Siguiente"))
         self.btn_prev.setText(_translate("MainWindow", "Anterior"))
         self.btn_open.setText(_translate("MainWindow", "Abrir"))
