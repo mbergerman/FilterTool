@@ -21,9 +21,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
+
+        # Init
         self.setFixedSize(1200, 675)
         self.stackedWidget.setCurrentIndex(0)
         self.tabPlots.setCurrentIndex(0)
+        self.updateType()
+        self.updateAprox()
 
         # Variables
         self.page = 0
@@ -33,14 +37,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plot_layouts = [self.plotlayout_1, self.plotlayout_2, self.plotlayout_3, self.plotlayout_4, self.plotlayout_5, self.plotlayout_6, self.plotlayout_7]
 
         # Signals/Slots
-            # General
+        # General
         self.btn_next.clicked.connect(self.nextPage)
         self.btn_prev.clicked.connect(self.prevPage)
         self.btn_save.clicked.connect(self.saveFile)
         self.btn_open.clicked.connect(self.openFile)
-            # Etapa 1
-        self.btn_plot.clicked.connect(self.plotAll)
-            # Etapa 2
+        # Etapa 1
+        self.btn_plot.clicked.connect(lambda: self.plotAll(self.designconfig))
+        self.combo_tipo.currentIndexChanged.connect(self.updateType)
+        self.combo_aprox.currentIndexChanged.connect(self.updateAprox)
+        # Etapa 2
         self.btn_new_stage.clicked.connect(self.newStage)
         self.btn_delete_stage.clicked.connect(self.deleteStage)
         self.stage_list.itemClicked.connect(self.updateStageView)
@@ -83,8 +89,121 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def openFile(self):
         pass # TO-DO
 
-    def plotAll(self):
+    def updateType(self):
+        type = self.combo_tipo.currentText()
+        w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
+        self.label_wp_2.setEnabled(w_band)
+        self.spin_wp_2.setEnabled(w_band)
+        self.label_wa_2.setEnabled(w_band)
+        self.spin_wa_2.setEnabled(w_band)
+
+        self.label_wp.setText('Frecuencia ωp+' if w_band else 'Frecuencia ωp')
+        self.label_wa.setText('Frecuencia ωa+' if w_band else 'Frecuencia ωa')
+        return
+
+    def updateAprox(self):
+        #aprox = self.combo_aprox.currentText()
+        return
+
+    def plotAll(self, designconfig):
+        type = self.combo_tipo.currentText()
+        aprox = self.combo_aprox.currentText()
+        denorm = self.spin_denorm.value()
+        minord = self.spin_minord.value()
+        maxord = self.spin_maxord.value()
+        qmax =  self.spin_qmax.value()
+        Ap = self.spin_Ap.value()
+        Aa = self.spin_Aa.value()
+        wp = self.spin_wp.value()
+        wa = self.spin_wa.value()
+        wp2 = self.spin_wp_2.value()
+        wa2 = self.spin_wa_2.value()
+
+        w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
+        if (wp == 0 or wa == 0) or \
+            (w_band and (wp2 == 0 or wa2 == 0 or wp2 >= wp or wa2 >= wa)) or \
+            (type == 'Pasa Banda' and (wp >= wa or wp2 <= wa2)) or \
+            (type == 'Rechaza Banda' and (wp <= wa or wp2 >= wa2)) or \
+            (type == 'Pasa Bajos' and wa <= wp) or \
+            (type == 'Pasa Altos' and wp <= wa):
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText("Los parametros para ωp y ωa no son válidos")
+                msg.setWindowTitle("Advertencia!")
+                msg.exec_()
+        else:
+            for x, ax in enumerate(self.axes):
+                ax.clear()
+                ax.grid()
+
+            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2)
+            wpn = 1
+            dwa = wa - wa2
+            dwp = wp - wp2
+            if type == 'Pasa Bajos':
+                won = wa/wp
+            elif type == 'Pasa Altos':
+                won = wp/wa
+            elif type == 'Pasa Banda':
+                won = dwa/dwp
+            elif type == 'Rechaza Banda':
+                won = dwp/dwa
+
+            self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
+
+            # Calcular aproximación here
+
+            for x, canv in enumerate(self.canvas):
+                canv.draw()
         pass # TO-DO
+
+    def plotTemplate(self, type, Ap, Aa, wp, wa, wp2, wa2):
+        if type == 'Pasa Bajos':
+            x = [wp / 10, wp, wp]
+            y = [Ap, Ap, Aa + 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wa, wa, wa * 10]
+            y = [Ap - 10, Aa, Aa]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+        elif type == 'Pasa Altos':
+            x = [wa / 10, wa, wa]
+            y = [Aa, Aa, Ap - 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wp, wp, wp * 10]
+            y = [Aa + 10, Ap, Ap]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+        elif type == 'Pasa Banda':
+            x = [wa2 / 10, wa2, wa2]
+            y = [Aa, Aa, Ap - 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wp2, wp2, wp, wp]
+            y = [Aa + 10, Ap, Ap, Aa + 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wa, wa, wa * 10]
+            y = [Ap - 10, Aa, Aa]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+        elif type == 'Rechaza Banda':
+            x = [wp2 / 10, wp2, wp2]
+            y = [Ap, Ap, Aa + 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wa2, wa2, wa, wa]
+            y = [Ap - 10, Aa, Aa, Ap - 10]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+            x = [wp, wp, wp * 10]
+            y = [Aa + 10, Ap, Ap]
+            self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+
+        return
 
     def newStage(self):
         polo1 = self.combo_polo1.currentText()

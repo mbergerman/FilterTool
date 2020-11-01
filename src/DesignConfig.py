@@ -13,11 +13,18 @@ class DesignConfig:
         self.Aa = 0
         self.wp = 0
         self.wa = 0
-        self.wo = 0
+        self.wp2 = 0
+        self.wa2 = 0
 
-    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wo):
+    def setType(self, type):
         self.type = self.type if type not in self.filter_types else self.filter_types.index(type)
+
+    def setAprox(self, aprox):
         self.aprox = self.aprox if aprox not in self.aprox_types else self.aprox_types.index(aprox)
+
+    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2):
+        self.setType(type)
+        self.setAprox(aprox)
         self.denorm = denorm
         self.minord = minord
         self.maxord = maxord
@@ -26,4 +33,5 @@ class DesignConfig:
         self.Aa = Aa
         self.wp = wp
         self.wa = wa
-        self.wo = wo
+        self.wp2 = wp2
+        self.wa2 = wa2

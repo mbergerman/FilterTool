@@ -70,7 +70,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="etapa1">
       <widget class="QLabel" name="label_e1">
@@ -230,9 +230,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>90</y>
-         <width>381</width>
-         <height>201</height>
+         <y>80</y>
+         <width>386</width>
+         <height>191</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout">
@@ -352,7 +352,7 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="label_desnorm">
+         <widget class="QLabel" name="label_denorm">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -365,7 +365,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QSpinBox" name="spin_desnom">
+         <widget class="QSpinBox" name="spin_denorm">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -436,6 +436,9 @@
           <property name="maximum">
            <number>100</number>
           </property>
+          <property name="value">
+           <number>10</number>
+          </property>
          </widget>
         </item>
         <item row="5" column="0">
@@ -465,6 +468,9 @@
           <property name="maximum">
            <number>100</number>
           </property>
+          <property name="value">
+           <number>10</number>
+          </property>
          </widget>
         </item>
        </layout>
@@ -473,7 +479,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>50</y>
+         <y>40</y>
          <width>171</width>
          <height>41</height>
         </rect>
@@ -493,7 +499,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>290</y>
+         <y>280</y>
          <width>171</width>
          <height>41</height>
         </rect>
@@ -513,9 +519,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>330</y>
+         <y>320</y>
          <width>385</width>
-         <height>197</height>
+         <height>211</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
@@ -594,6 +600,12 @@
           <property name="decimals">
            <number>10</number>
           </property>
+          <property name="minimum">
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
           <property name="stepType">
            <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
@@ -616,11 +628,17 @@
           <property name="decimals">
            <number>10</number>
           </property>
+          <property name="minimum">
+           <double>-100.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
           <property name="stepType">
            <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
           <property name="value">
-           <double>0.000000000000000</double>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -642,7 +660,7 @@
            <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
           <property name="value">
-           <double>0.000000000000000</double>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -664,12 +682,12 @@
            <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
           <property name="value">
-           <double>0.000000000000000</double>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label_wo">
+         <widget class="QLabel" name="label_wp_2">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -677,12 +695,12 @@
            </font>
           </property>
           <property name="text">
-           <string>Frecuencia ωo</string>
+           <string>Frecuencia ωp-</string>
           </property>
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QDoubleSpinBox" name="spin_wo">
+         <widget class="QDoubleSpinBox" name="spin_wp_2">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -699,11 +717,11 @@
            <enum>QAbstractSpinBox::DefaultStepType</enum>
           </property>
           <property name="value">
-           <double>0.000000000000000</double>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="6" column="1">
          <widget class="QCheckBox" name="check_plantilla">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -752,7 +770,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="6" column="0">
          <widget class="QLabel" name="label_check_plantilla">
           <property name="font">
            <font>
@@ -765,13 +783,48 @@
           </property>
          </widget>
         </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_wa_2">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωa-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wa_2">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QPushButton" name="btn_plot">
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>530</y>
+         <y>540</y>
          <width>191</width>
          <height>51</height>
         </rect>
