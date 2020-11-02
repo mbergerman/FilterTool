@@ -22,6 +22,12 @@ class DesignConfig:
     def setAprox(self, aprox):
         self.aprox = self.aprox if aprox not in self.aprox_types else self.aprox_types.index(aprox)
 
+    def getType(self):
+        return self.filter_types[self.type]
+
+    def getAprox(self):
+        return self.filter_types[self.aprox]
+
     def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2):
         self.setType(type)
         self.setAprox(aprox)

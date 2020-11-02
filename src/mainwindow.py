@@ -1,5 +1,6 @@
 from src.ui.mainwindow import *
 import numpy as np
+from numpy import linspace, logspace, cos, sin, heaviside, log10, floor, zeros, ones, pi
 import sys
 import os
 from PyQt5 import QtGui, QtWidgets
@@ -14,6 +15,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 from src.DesignConfig import *
+from src.Aproximations import *
 from src.FilterStage import *
 
 
@@ -119,6 +121,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         wp2 = self.spin_wp_2.value()
         wa2 = self.spin_wa_2.value()
 
+        # Mensaje advertencia: Parametros invalidos
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Advertencia!")
+
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
         if (wp == 0 or wa == 0) or \
             (w_band and (wp2 == 0 or wa2 == 0 or wp2 >= wp or wa2 >= wa)) or \
@@ -126,11 +133,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             (type == 'Rechaza Banda' and (wp <= wa or wp2 >= wa2)) or \
             (type == 'Pasa Bajos' and wa <= wp) or \
             (type == 'Pasa Altos' and wp <= wa):
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Warning)
-                msg.setText("Los parametros para ωp y ωa no son válidos")
-                msg.setWindowTitle("Advertencia!")
+                msg.setText("Los parametros para ωp y ωa no son válidos.")
                 msg.exec_()
+        elif Aa <= 0 or Ap <= 0:
+            msg.setText("Los parametros para Ap y/o Aa no son válidos.\n Ambos deben ser mayores a 0.")
+            msg.exec_()
         else:
             for x, ax in enumerate(self.axes):
                 ax.clear()
@@ -152,6 +159,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
 
             # Calcular aproximación here
+            if aprox == 'Butterworth':
+                z, p, k = Butterworth(designconfig)
+
+            try:
+                lowerfreq = min(wa, wp, wa2, wp2) / 10
+                higherfreq = max(wa, wp, wa2, wp2) * 10
+                x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
+                Gain = signal.bode(signal.ZerosPolesGain(z, p, k), x)
+                Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
+                self.axes[0].semilogx(Attenuation[0], Attenuation[1], 'k')
+                self.axes[1].semilogx(Gain[0], Gain[2], 'k')
+            except:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Error!")
+                msg.setText("Error crítico intentando generar gráficos!")
+                msg.exec_()
 
             for x, canv in enumerate(self.canvas):
                 canv.draw()
