@@ -186,33 +186,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.stage_list.clear()
             self.combo_polo1.clear()
             self.combo_polo2.clear()
+            self.plotPolesAndZeros(z, p)
 
-            self.getPlotAxes('Polos y Ceros').axhline(linewidth=1, color='k')
-            self.getPlotAxes('Polos y Ceros').axvline(linewidth=1, color='k')
-            self.getPlotAxes('Polos y Ceros 2').axhline(linewidth=1, color='k')
-            self.getPlotAxes('Polos y Ceros 2').axvline(linewidth=1, color='k')
-
-            poles_labels = dict()
-            zeros_labels = dict()
-            for i, pole in enumerate(p):
-                self.combo_polo1.addItem('Polo '+str(i+1))
-                self.combo_polo2.addItem('Polo '+str(i+1))
-                self.getPlotAxes('Polos y Ceros').plot(pole.real, pole.imag, 'rx', markersize=10)
-                self.getPlotAxes('Polos y Ceros 2').plot(pole.real, pole.imag, 'rx', markersize=10)
-                xy = (pole.real, pole.imag)
-                poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
-            for i, zero in enumerate(z):
-                self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
-                self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
-                xy = (zero.real, zero.imag)
-                zeros_labels[xy] = 'Cero ' + str(i+1) if xy not in zeros_labels else zeros_labels[xy]+', '+ str(i+1)
-
-            for polexy in poles_labels:
-                self.getPlotAxes('Polos y Ceros').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
-                self.getPlotAxes('Polos y Ceros 2').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
-            for zeroxy in zeros_labels:
-                self.getPlotAxes('Polos y Ceros').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
-                self.getPlotAxes('Polos y Ceros 2').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
             '''except:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
@@ -273,6 +248,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             y = [Aa + 10, Ap, Ap]
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+        return
+
+    def plotPolesAndZeros(self, z, p):
+        self.getPlotAxes('Polos y Ceros').axhline(linewidth=1, color='k')
+        self.getPlotAxes('Polos y Ceros').axvline(linewidth=1, color='k')
+        self.getPlotAxes('Polos y Ceros 2').axhline(linewidth=1, color='k')
+        self.getPlotAxes('Polos y Ceros 2').axvline(linewidth=1, color='k')
+
+        poles_labels = dict()
+        zeros_labels = dict()
+        for i, pole in enumerate(p):
+            self.combo_polo1.addItem('Polo '+str(i+1))
+            self.combo_polo2.addItem('Polo '+str(i+1))
+            self.getPlotAxes('Polos y Ceros').plot(pole.real, pole.imag, 'rx', markersize=10)
+            self.getPlotAxes('Polos y Ceros 2').plot(pole.real, pole.imag, 'rx', markersize=10)
+            xy = (pole.real, pole.imag)
+            poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
+        for i, zero in enumerate(z):
+            self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+            self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+            xy = (zero.real, zero.imag)
+            zeros_labels[xy] = 'Cero ' + str(i+1) if xy not in zeros_labels else zeros_labels[xy]+', '+ str(i+1)
+
+        for polexy in poles_labels:
+            self.getPlotAxes('Polos y Ceros').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+            self.getPlotAxes('Polos y Ceros 2').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+        for zeroxy in zeros_labels:
+            self.getPlotAxes('Polos y Ceros').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
+            self.getPlotAxes('Polos y Ceros 2').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
 
         return
 
