@@ -475,7 +475,7 @@ class Ui_MainWindow(object):
         self.label_e2.setFont(font)
         self.label_e2.setObjectName("label_e2")
         self.stage_list = QtWidgets.QListWidget(self.etapa2)
-        self.stage_list.setGeometry(QtCore.QRect(10, 120, 121, 291))
+        self.stage_list.setGeometry(QtCore.QRect(10, 120, 141, 291))
         font = QtGui.QFont()
         font.setFamily("Rockwell")
         font.setPointSize(12)
@@ -493,7 +493,7 @@ class Ui_MainWindow(object):
         self.label_stage_list.setFont(font)
         self.label_stage_list.setObjectName("label_stage_list")
         self.verticalLayoutWidget_8 = QtWidgets.QWidget(self.etapa2)
-        self.verticalLayoutWidget_8.setGeometry(QtCore.QRect(150, 40, 1011, 551))
+        self.verticalLayoutWidget_8.setGeometry(QtCore.QRect(170, 40, 991, 551))
         self.verticalLayoutWidget_8.setObjectName("verticalLayoutWidget_8")
         self.plotlayout_poles = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_8)
         self.plotlayout_poles.setContentsMargins(0, 0, 0, 0)
@@ -508,7 +508,7 @@ class Ui_MainWindow(object):
         self.label_diagrama.setAlignment(QtCore.Qt.AlignCenter)
         self.label_diagrama.setObjectName("label_diagrama")
         self.btn_new_stage = QtWidgets.QPushButton(self.etapa2)
-        self.btn_new_stage.setGeometry(QtCore.QRect(10, 490, 121, 41))
+        self.btn_new_stage.setGeometry(QtCore.QRect(10, 490, 141, 41))
         self.btn_new_stage.setStyleSheet("QPushButton {\n"
 " background-color: rgb(240, 240, 240);\n"
 " border-style: outset;\n"
@@ -528,7 +528,7 @@ class Ui_MainWindow(object):
 "")
         self.btn_new_stage.setObjectName("btn_new_stage")
         self.btn_delete_stage = QtWidgets.QPushButton(self.etapa2)
-        self.btn_delete_stage.setGeometry(QtCore.QRect(10, 540, 121, 41))
+        self.btn_delete_stage.setGeometry(QtCore.QRect(10, 540, 141, 41))
         self.btn_delete_stage.setStyleSheet("QPushButton {\n"
 " background-color: rgb(240, 240, 240);\n"
 " border-style: outset;\n"
@@ -548,7 +548,7 @@ class Ui_MainWindow(object):
 "")
         self.btn_delete_stage.setObjectName("btn_delete_stage")
         self.formLayoutWidget_3 = QtWidgets.QWidget(self.etapa2)
-        self.formLayoutWidget_3.setGeometry(QtCore.QRect(10, 420, 121, 61))
+        self.formLayoutWidget_3.setGeometry(QtCore.QRect(10, 420, 141, 61))
         self.formLayoutWidget_3.setObjectName("formLayoutWidget_3")
         self.formLayout_3 = QtWidgets.QFormLayout(self.formLayoutWidget_3)
         self.formLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -709,9 +709,9 @@ class Ui_MainWindow(object):
         self.label_diagrama.setText(_translate("MainWindow", "Diagrama de Polos y Ceros"))
         self.btn_new_stage.setText(_translate("MainWindow", "Crear"))
         self.btn_delete_stage.setText(_translate("MainWindow", "Borrar"))
-        self.label_polo1.setText(_translate("MainWindow", "Polo 1:"))
+        self.label_polo1.setText(_translate("MainWindow", "Polo A:"))
         self.combo_polo1.setItemText(0, _translate("MainWindow", "-"))
-        self.label_polo2.setText(_translate("MainWindow", "Polo 2:"))
+        self.label_polo2.setText(_translate("MainWindow", "Polo B:"))
         self.combo_polo2.setItemText(0, _translate("MainWindow", "-"))
         self.btn_next.setText(_translate("MainWindow", "Siguiente"))
         self.btn_prev.setText(_translate("MainWindow", "Anterior"))

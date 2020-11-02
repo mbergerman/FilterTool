@@ -54,6 +54,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.stage_list.itemClicked.connect(self.updateStageView)
 
         # Plots
+        self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4, 'Escalon': 5, 'Máximo Q': 6}
         self.figure = [Figure() for x in range(self.num_plots)]
         self.canvas = [FigureCanvas(self.figure[x]) for x in range(self.num_plots)]
         self.axes = [self.figure[x].subplots() for x in range(self.num_plots)]
@@ -142,6 +143,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for x, ax in enumerate(self.axes):
                 ax.clear()
                 ax.grid()
+            self.axes2.clear()
+            self.axes2.grid()
 
             self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2)
             wpn = 1
@@ -156,29 +159,73 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif type == 'Rechaza Banda':
                 won = dwp/dwa
 
-            self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
+            if self.check_plantilla.isChecked():
+                self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
 
             # Calcular aproximación here
+            # Falta todo el tema del orden min max, max q, todo eso
             if aprox == 'Butterworth':
                 z, p, k = Butterworth(designconfig)
+            elif aprox == 'Chebyshev I':
+                z, p, k = ChebyshevI(designconfig)
+            elif aprox == 'Chebyshev II':
+                z, p, k = ChebyshevI(designconfig)
 
-            try:
-                lowerfreq = min(wa, wp, wa2, wp2) / 10
-                higherfreq = max(wa, wp, wa2, wp2) * 10
-                x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
-                Gain = signal.bode(signal.ZerosPolesGain(z, p, k), x)
-                Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
-                self.axes[0].semilogx(Attenuation[0], Attenuation[1], 'k')
-                self.axes[1].semilogx(Gain[0], Gain[2], 'k')
-            except:
+            #try:
+
+            # Atenuacion y Fase
+            lowerfreq = min(wa, wp, wa2, wp2) / 10
+            higherfreq = max(wa, wp, wa2, wp2) * 10
+            x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
+            Gain = signal.bode(signal.ZerosPolesGain(z, p, k), x)
+            Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
+            self.getPlotAxes('Atenuación').semilogx(Attenuation[0], Attenuation[1], 'k')
+            self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
+
+            # Polos y Ceros
+            self.stage_list.clear()
+            self.combo_polo1.clear()
+            self.combo_polo2.clear()
+
+            self.getPlotAxes('Polos y Ceros').axhline(linewidth=1, color='k')
+            self.getPlotAxes('Polos y Ceros').axvline(linewidth=1, color='k')
+            self.getPlotAxes('Polos y Ceros 2').axhline(linewidth=1, color='k')
+            self.getPlotAxes('Polos y Ceros 2').axvline(linewidth=1, color='k')
+
+            poles_labels = dict()
+            zeros_labels = dict()
+            for i, pole in enumerate(p):
+                self.combo_polo1.addItem('Polo '+str(i+1))
+                self.combo_polo2.addItem('Polo '+str(i+1))
+                self.getPlotAxes('Polos y Ceros').plot(pole.real, pole.imag, 'rx', markersize=10)
+                self.getPlotAxes('Polos y Ceros 2').plot(pole.real, pole.imag, 'rx', markersize=10)
+                xy = (pole.real, pole.imag)
+                poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
+            for i, zero in enumerate(z):
+                self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+                self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+                xy = (zero.real, zero.imag)
+                zeros_labels[xy] = 'Cero ' + str(i+1) if xy not in zeros_labels else zeros_labels[xy]+', '+ str(i+1)
+
+            for polexy in poles_labels:
+                self.getPlotAxes('Polos y Ceros').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+                self.getPlotAxes('Polos y Ceros 2').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+            for zeroxy in zeros_labels:
+                self.getPlotAxes('Polos y Ceros').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
+                self.getPlotAxes('Polos y Ceros 2').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
+            '''except:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("Error crítico intentando generar gráficos!")
-                msg.exec_()
+                msg.exec_()'''
 
             for x, canv in enumerate(self.canvas):
+                self.figure[x].tight_layout()
                 canv.draw()
+            self.figure2.tight_layout()
+            self.canvas2.draw()
+
         pass # TO-DO
 
     def plotTemplate(self, type, Ap, Aa, wp, wa, wp2, wa2):
@@ -245,3 +292,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def updateStageView(self):
         pass # TO-DO
 
+    def getPlotAxes(self, type):
+        if type in self.plot_types:
+            return self.axes[ self.plot_types[type] ]
+        elif type == 'Polos y Ceros 2':
+            return self.axes2
