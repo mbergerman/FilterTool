@@ -11,7 +11,7 @@ def Butterworth(designconfig):
         N, Wn = signal.buttord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], designconfig.Ap, designconfig.Aa, True)
     else:
         return [[], [], 0]
-
+    N = max(min(N, designconfig.maxord), designconfig.minord)
     return signal.butter(N, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
 def ChebyshevI(designconfig):
@@ -23,7 +23,7 @@ def ChebyshevI(designconfig):
         N, Wn = signal.cheb1ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], designconfig.Ap, designconfig.Aa, True)
     else:
         return [[], [], 0]
-
+    N = max(min(N, designconfig.maxord), designconfig.minord)
     return signal.cheby1(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
 def ChebyshevII(designconfig):
@@ -35,5 +35,5 @@ def ChebyshevII(designconfig):
         N, Wn = signal.cheb2ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], designconfig.Ap, designconfig.Aa, True)
     else:
         return [[], [], 0]
-
+    N = max(min(N, designconfig.maxord), designconfig.minord)
     return signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')

@@ -130,7 +130,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Advertencia!")
-
+        warning_msg = ''
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
         if (wp == 0 or wa == 0) or \
             (w_band and (wp2 == 0 or wa2 == 0 or wp2 >= wp or wa2 >= wa)) or \
@@ -138,10 +138,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             (type == 'Rechaza Banda' and (wp <= wa or wp2 >= wa2)) or \
             (type == 'Pasa Bajos' and wa <= wp) or \
             (type == 'Pasa Altos' and wp <= wa):
-                msg.setText("Los parametros para ωp y ωa no son válidos.")
-                msg.exec_()
-        elif Aa <= 0 or Ap <= 0:
-            msg.setText("Los parametros para Ap y/o Aa no son válidos.\n Ambos deben ser mayores a 0.")
+                warning_msg += "Los parametros para ωp y ωa no son válidos.\n"
+        if Aa <= 0 or Ap <= 0:
+            warning_msg += "Los parametros para Ap y/o Aa no son válidos, ambos deben ser mayores a 0.\n"
+        if minord > maxord:
+            warning_msg += "El orden mínimo debe ser inferior al orden máximo.\n"
+
+        if len(warning_msg) > 0:
+            msg.setText(warning_msg)
             msg.exec_()
         else:
             for x, ax in enumerate(self.axes):
@@ -208,6 +212,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             t, y = signal.step(filter_system)
             self.getPlotAxes('Escalón').plot(t, y, 'k')
 
+            # Máximo Q
+            self.plotQFactor(z, p)
+
             '''except:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
@@ -273,8 +280,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def plotPolesAndZeros(self, z, p):
         self.getPlotAxes('Polos y Ceros').axhline(linewidth=1, color='k')
         self.getPlotAxes('Polos y Ceros').axvline(linewidth=1, color='k')
-        self.getPlotAxes('Polos y Ceros 2').axhline(linewidth=1, color='k')
-        self.getPlotAxes('Polos y Ceros 2').axvline(linewidth=1, color='k')
 
         poles_labels = dict()
         zeros_labels = dict()
@@ -282,23 +287,48 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_polo1.addItem('Polo '+str(i+1))
             self.combo_polo2.addItem('Polo '+str(i+1))
             self.getPlotAxes('Polos y Ceros').plot(pole.real, pole.imag, 'rx', markersize=10)
-            self.getPlotAxes('Polos y Ceros 2').plot(pole.real, pole.imag, 'rx', markersize=10)
             xy = (pole.real, pole.imag)
             poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
         for i, zero in enumerate(z):
             self.combo_cero1.addItem('Cero '+str(i+1))
             self.combo_cero2.addItem('Cero '+str(i+1))
             self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
-            self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
             xy = (zero.real, zero.imag)
             zeros_labels[xy] = 'Cero ' + str(i+1) if xy not in zeros_labels else zeros_labels[xy]+', '+ str(i+1)
 
         for polexy in poles_labels:
             self.getPlotAxes('Polos y Ceros').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
-            self.getPlotAxes('Polos y Ceros 2').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
         for zeroxy in zeros_labels:
             self.getPlotAxes('Polos y Ceros').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
-            self.getPlotAxes('Polos y Ceros 2').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext = (0, 10), ha = 'center')
+
+        return
+
+    def plotQFactor(self, z, p):
+        self.getPlotAxes('Máximo Q').axhline(linewidth=1, color='k')
+        self.getPlotAxes('Máximo Q').axvline(linewidth=1, color='k')
+        self.getPlotAxes('Polos y Ceros 2').axhline(linewidth=1, color='k')
+        self.getPlotAxes('Polos y Ceros 2').axvline(linewidth=1, color='k')
+
+        poles_labels = dict()
+        zeros_labels = dict()
+        for i, pole in enumerate(p):
+            self.getPlotAxes('Máximo Q').plot(pole.real, pole.imag, 'rx', markersize=10)
+            self.getPlotAxes('Polos y Ceros 2').plot(pole.real, pole.imag, 'rx', markersize=10)
+            Q = -abs(pole)/(2*pole.real) if pole.real < 0 else float('inf')
+            xy = (pole.real, pole.imag)
+            poles_labels[xy] = 'Q = {:.3f} (Polo {}'.format(Q, i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
+        for i, zero in enumerate(z):
+            self.getPlotAxes('Máximo Q').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+            self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
+            xy = (zero.real, zero.imag)
+            zeros_labels[xy] = 'Cero ' + str(i + 1) if xy not in zeros_labels else zeros_labels[xy] + ', ' + str(i + 1)
+
+        for polexy in poles_labels:
+            self.getPlotAxes('Máximo Q').annotate(poles_labels[polexy]+')', polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+            self.getPlotAxes('Polos y Ceros 2').annotate(poles_labels[polexy]+')', polexy, textcoords="offset points", xytext=(0, 10), ha='center')
+        for zeroxy in zeros_labels:
+            self.getPlotAxes('Máximo Q').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext=(0, 10), ha='center')
+            self.getPlotAxes('Polos y Ceros 2').annotate(zeros_labels[zeroxy], zeroxy, textcoords="offset points", xytext=(0, 10), ha='center')
 
         return
 
