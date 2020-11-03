@@ -1,7 +1,10 @@
 class FilterStage:
-    def __init__(self, p1 = '-', p2 = '-'):
+    def __init__(self, p1=-1, p2=-1, z1=-1, z2=-1, cell='Sallen-Key'):
         self.pole1 = p1
         self.pole2 = p2
+        self.zero1 = z1
+        self.zero2 = z2
+        self.cell = cell
 
     def setPoles(self, p1, p2):
         self.pole1 = p1
@@ -9,3 +12,22 @@ class FilterStage:
 
     def getPoles(self):
         return self.pole1, self.pole2
+
+    def getLabel(self):
+        pole_text = ''
+        zero_text = ''
+        if self.pole1 < 0:
+            pole_text = ' Polo {}\n'.format(self.pole2+1)
+        elif self.pole2 < 0:
+            pole_text = ' Polo {}\n'.format(self.pole1+1)
+        else:
+            pole_text = ' Polo {}, Polo {}\n'.format(self.pole1+1, self.pole2+1)
+        if self.zero1 < 0:
+            if self.zero2 >= 0:
+                zero_text = ' Cero {}\n'.format(self.zero2+1)
+        elif self.zero2 < 0:
+            zero_text = ' Cero {}\n'.format(self.zero1+1)
+        else:
+            zero_text = ' Cero {}, Cero {}\n'.format(self.zero1+1, self.zero2+1)
+
+        return '{}{} Q = {}\n Celda: {}'.format(pole_text, zero_text, '?', self.cell)

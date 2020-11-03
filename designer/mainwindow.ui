@@ -547,45 +547,6 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_Aa">
-          <property name="font">
-           <font>
-            <family>Rockwell</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Banda de atenuación (Aa)    </string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_wp">
-          <property name="font">
-           <font>
-            <family>Rockwell</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Frecuencia ωp</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_wa">
-          <property name="font">
-           <font>
-            <family>Rockwell</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Frecuencia ωa</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="spin_Ap">
           <property name="font">
@@ -611,6 +572,19 @@
           </property>
           <property name="value">
            <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_Aa">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Banda de atenuación (Aa)    </string>
           </property>
          </widget>
         </item>
@@ -642,6 +616,19 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_wp">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωp</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <widget class="QDoubleSpinBox" name="spin_wp">
           <property name="font">
@@ -664,29 +651,7 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QDoubleSpinBox" name="spin_wa">
-          <property name="font">
-           <font>
-            <family>Rockwell</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="decimals">
-           <number>10</number>
-          </property>
-          <property name="stepType">
-           <enum>QAbstractSpinBox::DefaultStepType</enum>
-          </property>
-          <property name="value">
-           <double>1.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_wp_2">
           <property name="font">
            <font>
@@ -699,8 +664,21 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QDoubleSpinBox" name="spin_wp_2">
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_wa_2">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Frecuencia ωa-</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wa_2">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -718,6 +696,19 @@
           </property>
           <property name="value">
            <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label_check_plantilla">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Visualizar Plantilla</string>
           </property>
          </widget>
         </item>
@@ -770,8 +761,8 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_check_plantilla">
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_wa">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -779,25 +770,34 @@
            </font>
           </property>
           <property name="text">
-           <string>Visualizar Plantilla</string>
+           <string>Frecuencia ωa</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label_wa_2">
+        <item row="3" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wp_2">
           <property name="font">
            <font>
             <family>Rockwell</family>
             <pointsize>12</pointsize>
            </font>
           </property>
-          <property name="text">
-           <string>Frecuencia ωa-</string>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>10</number>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
-         <widget class="QDoubleSpinBox" name="spin_wa_2">
+        <item row="4" column="1">
+         <widget class="QDoubleSpinBox" name="spin_wa">
           <property name="font">
            <font>
             <family>Rockwell</family>
@@ -1016,8 +1016,20 @@
          <pointsize>12</pointsize>
         </font>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QListWidget::item { 
+	border-bottom: 1px solid  rgb(200, 200, 200);
+}
+QListWidget::item:selected {
+	background-color: rgb(220, 220, 220);
+	color: black;
+}</string>
        </property>
        <property name="dragDropMode">
         <enum>QAbstractItemView::DragDrop</enum>
@@ -1085,7 +1097,7 @@
         <rect>
          <x>10</x>
          <y>540</y>
-         <width>131</width>
+         <width>91</width>
          <height>41</height>
         </rect>
        </property>
@@ -1115,9 +1127,9 @@
       <widget class="QPushButton" name="btn_delete_stage">
        <property name="geometry">
         <rect>
-         <x>160</x>
+         <x>110</x>
          <y>540</y>
-         <width>141</width>
+         <width>91</width>
          <height>41</height>
         </rect>
        </property>
@@ -1333,6 +1345,38 @@
          </widget>
         </item>
        </layout>
+      </widget>
+      <widget class="QPushButton" name="btn_edit_stage">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>540</y>
+         <width>91</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+ background-color: rgb(240, 240, 240);
+ border-style: outset;
+ border-width: 5px;
+ border-radius: 10px;
+ border-color: gray;
+ font: Rockwell;
+ font-size: 20px;
+ }
+ QPushButton:pressed {
+ background-color: rgb(220, 220, 220);
+ border-style: inset;
+ }
+ QPushButton:hover:!pressed {
+ background-color: rgb(220, 220, 220);
+ }
+</string>
+       </property>
+       <property name="text">
+        <string>Editar</string>
+       </property>
       </widget>
      </widget>
     </widget>

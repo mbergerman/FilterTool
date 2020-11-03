@@ -37,6 +37,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.designconfig = DesignConfig()
         self.num_plots = self.tabPlots.count()
         self.plot_layouts = [self.plotlayout_1, self.plotlayout_2, self.plotlayout_3, self.plotlayout_4, self.plotlayout_5, self.plotlayout_6, self.plotlayout_7]
+        self.filter_stages = dict()
+        self.editingStage = False
+        self.editingStageIndex = 0
 
         # Signals/Slots
         # General
@@ -50,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.combo_aprox.currentIndexChanged.connect(self.updateAprox)
         # Etapa 2
         self.btn_new_stage.clicked.connect(self.newStage)
+        self.btn_edit_stage.clicked.connect(self.editStage)
         self.btn_delete_stage.clicked.connect(self.deleteStage)
         self.stage_list.itemClicked.connect(self.updateStageView)
 
@@ -163,7 +167,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
 
             # Calcular aproximación here
-            # Falta todo el tema del orden min max, max q, todo eso
+            # Falta el tema del orden min max, max q, etc
             if aprox == 'Butterworth':
                 z, p, k = Butterworth(designconfig)
             elif aprox == 'Chebyshev I':
@@ -186,6 +190,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.stage_list.clear()
             self.combo_polo1.clear()
             self.combo_polo2.clear()
+            self.combo_cero1.clear()
+            self.combo_cero2.clear()
+            self.combo_polo1.addItem('-')
+            self.combo_polo2.addItem('-')
+            self.combo_cero1.addItem('-')
+            self.combo_cero2.addItem('-')
             self.plotPolesAndZeros(z, p)
 
             '''except:
@@ -266,6 +276,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             xy = (pole.real, pole.imag)
             poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
         for i, zero in enumerate(z):
+            self.combo_cero1.addItem('Cero '+str(i+1))
+            self.combo_cero2.addItem('Cero '+str(i+1))
             self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
             self.getPlotAxes('Polos y Ceros 2').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
             xy = (zero.real, zero.imag)
@@ -281,17 +293,142 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def newStage(self):
-        polo1 = self.combo_polo1.currentText()
-        polo2 = self.combo_polo2.currentText()
-        self.stage_list.addItem(' {} , {}'.format(polo1, polo2))
-        return
+        new_stage = self.getStageParameters()
+        if new_stage is not None:
+            self.stage_list.addItem(new_stage.getLabel())
+            self.filter_stages[new_stage.getLabel()] = new_stage
+            return True
+        return False
+
+    def getStageParameters(self):
+        pole1 = self.combo_polo1.currentText()
+        pole2 = self.combo_polo2.currentText()
+        pole1 = int(pole1[5:])-1 if pole1.startswith('Polo') else -1
+        pole2 = int(pole2[5:])-1 if pole2.startswith('Polo') else -1
+
+        zero1 = self.combo_cero1.currentText()
+        zero2 = self.combo_cero2.currentText()
+        zero1 = int(zero1[5:])-1 if zero1.startswith('Cero') else -1
+        zero2 = int(zero2[5:])-1 if zero2.startswith('Cero') else -1
+
+        cell = self.combo_celda.currentText()
+
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("Advertencia!")
+        if pole1 == pole2 and pole1 >= 0:
+            msg.setText("Ambos polos deben ser distintos.")
+            msg.exec_()
+        elif zero1 == zero2 and zero1 >= 0:
+            msg.setText("Ambos ceros deben ser distintos.")
+            msg.exec_()
+        elif pole1 == pole2 and zero1 == zero2 and pole1 < 0 and zero1 < 0:
+            msg.setText("Se debe seleccionar al menos un polo o un cero.")
+            msg.exec_()
+        else:
+            if pole1 >= 0:
+                self.combo_polo1.model().item(pole1+1).setEnabled(False)
+                self.combo_polo2.model().item(pole1+1).setEnabled(False)
+            if pole2 >= 0:
+                self.combo_polo1.model().item(pole2+1).setEnabled(False)
+                self.combo_polo2.model().item(pole2+1).setEnabled(False)
+            if zero1 >= 0:
+                self.combo_cero1.model().item(zero1+1).setEnabled(False)
+                self.combo_cero2.model().item(zero1+1).setEnabled(False)
+            if zero2 >= 0:
+                self.combo_cero1.model().item(zero2+1).setEnabled(False)
+                self.combo_cero2.model().item(zero2+1).setEnabled(False)
+            self.combo_polo1.setCurrentIndex(0)
+            self.combo_polo2.setCurrentIndex(0)
+            self.combo_cero1.setCurrentIndex(0)
+            self.combo_cero2.setCurrentIndex(0)
+            return FilterStage(pole1, pole2, zero1, zero2, cell)
+
+        return None
+
+    def editStage(self):
+        if not self.editingStage:
+            selection = self.stage_list.selectedItems()
+            if len(selection) > 0:
+                self.btn_edit_stage.setText('Hecho')
+                self.editingStage = True
+                self.editingStageIndex = self.stage_list.row(selection[0])
+                self.btn_new_stage.setEnabled(False)
+                self.btn_delete_stage.setEnabled(False)
+                self.stage_list.setEnabled(False)
+                index = self.editingStageIndex
+                current_stage = self.filter_stages[self.stage_list.item(index).text()]
+                pole1 = current_stage.pole1
+                pole2 = current_stage.pole2
+                zero1 = current_stage.zero1
+                zero2 = current_stage.zero2
+                cell = current_stage.cell
+                self.combo_celda.setCurrentIndex(self.combo_celda.findText(cell))
+                if pole1 >= 0:
+                    self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
+                    self.combo_polo2.model().item(pole1 + 1).setEnabled(True)
+                    self.combo_polo1.setCurrentIndex(pole1+1)
+                if pole2 >= 0:
+                    self.combo_polo1.model().item(pole2 + 1).setEnabled(True)
+                    self.combo_polo2.model().item(pole2 + 1).setEnabled(True)
+                    self.combo_polo2.setCurrentIndex(pole2+1)
+                if zero1 >= 0:
+                    self.combo_cero1.model().item(zero1 + 1).setEnabled(True)
+                    self.combo_cero2.model().item(zero1 + 1).setEnabled(True)
+                    self.combo_cero1.setCurrentIndex(zero1+1)
+                if zero2 >= 0:
+                    self.combo_cero1.model().item(zero2 + 1).setEnabled(True)
+                    self.combo_cero2.model().item(zero2 + 1).setEnabled(True)
+                    self.combo_cero2.setCurrentIndex(zero2+1)
+                return True
+            else:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Warning)
+                msg.setWindowTitle("Advertencia!")
+                msg.setText("Debe seleccionar una etapa para editar.")
+                msg.exec_()
+                return False
+        else:
+            new_stage = self.getStageParameters()
+            if new_stage is not None:
+                self.btn_edit_stage.setText('Editar')
+                self.editingStage = False
+                self.btn_new_stage.setEnabled(True)
+                self.btn_delete_stage.setEnabled(True)
+                self.stage_list.setEnabled(True)
+
+                index = self.editingStageIndex
+                del self.filter_stages[self.stage_list.item(index).text()]
+                self.stage_list.item(index).setText(new_stage.getLabel())
+                self.filter_stages[new_stage.getLabel()] = new_stage
+                return True
+            else:
+                return False
 
     def deleteStage(self):
         selection = self.stage_list.selectedItems()
         if len(selection) > 0:
             index = self.stage_list.row(selection[0])
-            self.stage_list.takeItem(index)
-        return
+            old_stage = self.filter_stages[ self.stage_list.takeItem(index).text() ]
+            pole1 = old_stage.pole1
+            pole2 = old_stage.pole2
+            zero1 = old_stage.zero1
+            zero2 = old_stage.zero2
+            if pole1 >= 0:
+                self.combo_polo1.model().item(pole1+1).setEnabled(True)
+                self.combo_polo2.model().item(pole1+1).setEnabled(True)
+            if pole2 >= 0:
+                self.combo_polo1.model().item(pole2+1).setEnabled(True)
+                self.combo_polo2.model().item(pole2+1).setEnabled(True)
+            if zero1 >= 0:
+                self.combo_cero1.model().item(zero1+1).setEnabled(True)
+                self.combo_cero2.model().item(zero1+1).setEnabled(True)
+            if zero2 >= 0:
+                self.combo_cero1.model().item(zero2+1).setEnabled(True)
+                self.combo_cero2.model().item(zero2+1).setEnabled(True)
+            del old_stage
+            return True
+        return False
 
     def updateStageView(self):
         pass # TO-DO
