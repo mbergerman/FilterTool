@@ -58,7 +58,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.stage_list.itemClicked.connect(self.updateStageView)
 
         # Plots
-        self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4, 'Escalon': 5, 'Máximo Q': 6}
+        self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4, 'Escalón': 5, 'Máximo Q': 6}
         self.figure = [Figure() for x in range(self.num_plots)]
         self.canvas = [FigureCanvas(self.figure[x]) for x in range(self.num_plots)]
         self.axes = [self.figure[x].subplots() for x in range(self.num_plots)]
@@ -176,15 +176,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = ChebyshevI(designconfig)
 
             #try:
-
+            filter_system = signal.ZerosPolesGain(z, p, k)
             # Atenuacion y Fase
             lowerfreq = min(wa, wp, wa2, wp2) / 10
             higherfreq = max(wa, wp, wa2, wp2) * 10
             x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
-            Gain = signal.bode(signal.ZerosPolesGain(z, p, k), x)
+            Gain = signal.bode(filter_system, x)
             Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
             self.getPlotAxes('Atenuación').semilogx(Attenuation[0], Attenuation[1], 'k')
             self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
+
+            # Retardo de Grupo
+            w, gd = signal.group_delay(signal.zpk2tf(z, p, k))
+            self.getPlotAxes('Retardo de Grupo').semilogx(w, gd)
 
             # Polos y Ceros
             self.stage_list.clear()
@@ -197,6 +201,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_cero1.addItem('-')
             self.combo_cero2.addItem('-')
             self.plotPolesAndZeros(z, p)
+
+            # Respuestas temporales
+            t, y = signal.impulse(filter_system)
+            self.getPlotAxes('Impulso').plot(t, y, 'k')
+            t, y = signal.step(filter_system)
+            self.getPlotAxes('Escalón').plot(t, y, 'k')
 
             '''except:
                 msg = QMessageBox()
