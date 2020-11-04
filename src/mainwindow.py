@@ -25,7 +25,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Init
-        self.setFixedSize(1200, 675)
+        self.setFixedSize(1290, 700)
         self.stackedWidget.setCurrentIndex(0)
         self.tabPlots.setCurrentIndex(0)
         self.updateType()
@@ -90,6 +90,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.stackedWidget.setCurrentIndex(self.page)
         return
 
+    def set_A_Template(self):
+        self.GD_tau.setEnabled(False)
+        self.GD_wrg.setEnabled(False)
+        self.GD_gamma.setEnabled(False)
+        self.spin_Ap.setEnabled(True)
+        self.spin_Aa.setEnabled(True)
+        self.spin_wp.setEnabled(True)
+        self.spin_wa.setEnabled(True)
+        self.plantilla_box.setCurrentIndex(0)
+        return
+
+    def set_GD_Template(self):
+        self.GD_tau.setEnabled(True)
+        self.GD_wrg.setEnabled(True)
+        self.GD_gamma.setEnabled(True)
+        self.spin_Ap.setEnabled(False)
+        self.spin_Aa.setEnabled(False)
+        self.spin_wp.setEnabled(False)
+        self.spin_wp_2.setEnabled(False)
+        self.spin_wa.setEnabled(False)
+        self.spin_wa_2.setEnabled(False)
+        self.plantilla_box.setCurrentIndex(1)
+        return
+    
     def saveFile(self):
         pass # TO-DO
 
@@ -106,10 +130,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.label_wp.setText('Frecuencia ωp+' if w_band else 'Frecuencia ωp')
         self.label_wa.setText('Frecuencia ωa+' if w_band else 'Frecuencia ωa')
+
         return
 
     def updateAprox(self):
-        #aprox = self.combo_aprox.currentText()
+        aprox = self.combo_aprox.currentText()
+
+        if aprox == 'Gauss' or aprox == 'Bessel':
+            self.set_GD_Template()
+        else:
+            self.set_A_Template()
         return
 
     def plotAll(self, designconfig):
@@ -118,13 +148,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         denorm = self.spin_denorm.value()
         minord = self.spin_minord.value()
         maxord = self.spin_maxord.value()
-        qmax =  self.spin_qmax.value()
+        qmax = self.spin_qmax.value()
         Ap = self.spin_Ap.value()
         Aa = self.spin_Aa.value()
         wp = self.spin_wp.value()
         wa = self.spin_wa.value()
         wp2 = self.spin_wp_2.value()
         wa2 = self.spin_wa_2.value()
+        tau = self.GD_tau.value()
+        wrg = self.GD_wrg.value()
+        gamma = self.GD_gamma.value()
 
         # Mensaje advertencia: Parametros invalidos
         msg = QMessageBox()
@@ -150,7 +183,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.axes2.clear()
             self.axes2.grid()
 
-            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2)
+            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
             wpn = 1
             dwa = wa - wa2
             dwp = wp - wp2
@@ -174,6 +207,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = ChebyshevI(designconfig)
             elif aprox == 'Chebyshev II':
                 z, p, k = ChebyshevI(designconfig)
+            elif aprox == 'Bessel':
+                z, p, k = Bessel(designconfig)
 
             #try:
             filter_system = signal.ZerosPolesGain(z, p, k)
