@@ -217,10 +217,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # try:
             filter_system = signal.ZerosPolesGain(z, p, k)
             # Atenuacion y Fase
-            if type == 'Pasa Bajos' or aprox != 'Pasa Altos':
+            if type == 'Pasa Bajos' or type == 'Pasa Altos':
                 lowerfreq = wp / 10
                 higherfreq = wa * 10
-            elif type == 'Pasa Banda' or aprox != 'Rechaza Banda':
+            elif type == 'Pasa Banda' or type == 'Rechaza Banda':
                 lowerfreq = min(wa, wp, wa2, wp2) / 10
                 higherfreq = max(wa, wp, wa2, wp2) * 10
             elif aprox == 'Bessel' or aprox == 'Gauss':
