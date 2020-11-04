@@ -236,7 +236,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # Retardo de Grupo
             w, h = signal.freqs_zpk(z, p, k, x)
             gd = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
-            self.getPlotAxes('Retardo de Grupo').semilogx(w[1:], gd)
+            self.getPlotAxes('Retardo de Grupo').semilogx(w[1:], gd, 'k')
 
             # Polos y Ceros
             self.stage_list.clear()
@@ -251,9 +251,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plotPolesAndZeros(z, p)
 
             # Respuestas temporales
-            t, y = signal.impulse(filter_system)
+            t, y = signal.impulse(filter_system, N = 10000)
             self.getPlotAxes('Impulso').plot(t, y, 'k')
-            t, y = signal.step(filter_system)
+            t, y = signal.step(filter_system, N = 10000)
             self.getPlotAxes('Escalón').plot(t, y, 'k')
 
             '''except:
