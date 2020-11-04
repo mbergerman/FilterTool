@@ -251,9 +251,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plotPolesAndZeros(z, p)
 
             # Respuestas temporales
-            t, y = signal.impulse(filter_system, N = 10000)
+            t, y = signal.impulse(filter_system, N = 1000)
             self.getPlotAxes('Impulso').plot(t, y, 'k')
-            t, y = signal.step(filter_system, N = 10000)
+            t, y = signal.step(filter_system, N = 1000)
             self.getPlotAxes('Escalón').plot(t, y, 'k')
 
             '''except:

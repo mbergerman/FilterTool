@@ -15,6 +15,9 @@ def Butterworth(designconfig):
     else:
         return [[], [], 0]
 
+    if N < designconfig.minord: N = designconfig.minord
+    if N > designconfig.maxord: N = designconfig.maxord
+
     return signal.butter(N, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
 
@@ -30,6 +33,9 @@ def ChebyshevI(designconfig):
     else:
         return [[], [], 0]
 
+    if N < designconfig.minord: N = designconfig.minord
+    if N > designconfig.maxord: N = designconfig.maxord
+
     return signal.cheby1(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
 
@@ -44,6 +50,9 @@ def ChebyshevII(designconfig):
                                 designconfig.Ap, designconfig.Aa, True)
     else:
         return [[], [], 0]
+
+    if N < designconfig.minord: N = designconfig.minord
+    if N > designconfig.maxord: N = designconfig.maxord
 
     return signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
@@ -61,6 +70,9 @@ def Bessel(designconfig):
         w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
         w, th = signal.freqs(tb, ta, w)
         gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+
+    if n < designconfig.minord: n = designconfig.minord
+    if n > designconfig.maxord: n = designconfig.maxord
 
     z, p, k = signal.bessel(n, 1, 'low', analog=True, output='zpk', norm='delay')
 
