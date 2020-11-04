@@ -477,7 +477,7 @@ class Ui_MainWindow(object):
         self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName("page_4")
         self.formLayoutWidget_6 = QtWidgets.QWidget(self.page_4)
-        self.formLayoutWidget_6.setGeometry(QtCore.QRect(0, 20, 554, 131))
+        self.formLayoutWidget_6.setGeometry(QtCore.QRect(0, 20, 471, 131))
         self.formLayoutWidget_6.setObjectName("formLayoutWidget_6")
         self.formLayout_8 = QtWidgets.QFormLayout(self.formLayoutWidget_6)
         self.formLayout_8.setLabelAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)

@@ -54,7 +54,6 @@ def Bessel(designconfig):
     tb, ta = signal.bessel(N=n, Wn=1, btype='low', analog=True, output='ba', norm='delay')
     w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
     w, th = signal.freqs(tb, ta, w)
-    num = 0
     gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
     while gd[500] < (1 - (designconfig.gamma / 100)):
         n += 1
@@ -70,5 +69,7 @@ def Bessel(designconfig):
 
     for i in range(len(z)):
         z[i] = z[i] / designconfig.tau
+
+    k = k / (designconfig.tau ** (n - len(z)))
 
     return z, p, k
