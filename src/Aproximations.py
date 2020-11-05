@@ -76,3 +76,6 @@ def Bessel(designconfig):
     k = k / (designconfig.tau ** (n - len(z)))
 
     return z, p, k
+
+def Cauer():
+    return
