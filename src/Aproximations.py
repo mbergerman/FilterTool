@@ -15,7 +15,12 @@ def Butterworth(designconfig):
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
-    return signal.butter(N, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    z, p, k = signal.butter(N, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
 
 
 def ChebyshevI(designconfig):
@@ -30,7 +35,12 @@ def ChebyshevI(designconfig):
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
-    return signal.cheby1(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    z, p, k = signal.cheby1(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
 
 
 def ChebyshevII(designconfig):
@@ -45,7 +55,12 @@ def ChebyshevII(designconfig):
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
-    return signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    z, p, k = signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
 
 
 def Bessel(designconfig):
@@ -75,6 +90,8 @@ def Bessel(designconfig):
 
     k = k / (designconfig.tau ** (n - len(z)))
 
+    p = setMaxQ(designconfig.qmax, p)
+
     return z, p, k
 
 def Cauer(designconfig):
@@ -91,3 +108,32 @@ def Cauer(designconfig):
     N = max(min(N, designconfig.maxord), designconfig.minord)
     return signal.ellipord(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
+
+def setMaxQ(maxQ, poles):
+    for i in range(len(poles)):
+        w0 = abs(poles[i])
+        a = abs(poles[i].real)
+        Q = w0 / (2 * a)
+        if Q > maxQ:
+            w0st = (maxQ-0.05) * 2 * a
+            ast = w0 / (2 * (maxQ-0.05))
+            pst1 = [-a, np.sign(poles[i].imag) * ((w0st ** 2 - a ** 2) ** (1 / 2))]
+            pst2 = [-ast, poles[i].imag]
+
+            m = (pst2[1] - pst1[1]) / (pst2[0] - pst1[0])
+            line = lambda x: m * (x - pst1[0]) + pst1[1]
+            xs = np.linspace(min(-a, -ast), max(-a, -ast), 1000)
+            ys = line(xs)
+            difs = np.zeros(len(xs))
+
+            min_dif = w0
+            value = 0
+            for n in range(len(xs)):
+                difs[n] = ((xs[n] - poles[i].real) ** 2 + (ys[n] - poles[i].imag) ** 2) ** (1 / 2)
+                if difs[n] < min_dif:
+                    value = n
+                    min_dif = difs[n]
+
+            poles[i] = xs[value] + 1j*ys[value]
+
+    return poles
