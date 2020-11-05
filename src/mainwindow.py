@@ -165,45 +165,45 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if reply == QMessageBox.Yes:
             filename = QFileDialog.getOpenFileName(self, "Abrir Archivo", "", "Filter Design Tool (*.fdt)", "Filter Design Tool (*.fdt)")[0]
             if filename:
-                #try:
-                self.filter_design.open(filename)
-                self.designconfig = self.filter_design.dc
-                self.combo_tipo.setCurrentIndex(self.designconfig.type)
-                self.combo_aprox.setCurrentIndex(self.designconfig.aprox)
-                self.spin_denorm.setValue(self.designconfig.denorm)
-                self.spin_minord.setValue(self.designconfig.minord)
-                self.spin_maxord.setValue(self.designconfig.maxord)
-                self.spin_qmax.setValue(self.designconfig.qmax)
-                self.spin_Ap.setValue(self.designconfig.Ap)
-                self.spin_Aa.setValue(self.designconfig.Aa)
-                self.spin_wp.setValue(self.designconfig.wp)
-                self.spin_wa.setValue(self.designconfig.wa)
-                self.spin_wp_2.setValue(self.designconfig.wp2)
-                self.spin_wa_2.setValue(self.designconfig.wa2)
-                self.GD_tau.setValue(self.designconfig.tau)
-                self.GD_wrg.setValue(self.designconfig.wrg)
-                self.GD_gamma.setValue(self.designconfig.gamma)
+                try:
+                    self.filter_design.open(filename)
+                    self.designconfig = self.filter_design.dc
+                    self.combo_tipo.setCurrentIndex(self.designconfig.type)
+                    self.combo_aprox.setCurrentIndex(self.designconfig.aprox)
+                    self.spin_denorm.setValue(self.designconfig.denorm)
+                    self.spin_minord.setValue(self.designconfig.minord)
+                    self.spin_maxord.setValue(self.designconfig.maxord)
+                    self.spin_qmax.setValue(self.designconfig.qmax)
+                    self.spin_Ap.setValue(self.designconfig.Ap)
+                    self.spin_Aa.setValue(self.designconfig.Aa)
+                    self.spin_wp.setValue(self.designconfig.wp)
+                    self.spin_wa.setValue(self.designconfig.wa)
+                    self.spin_wp_2.setValue(self.designconfig.wp2)
+                    self.spin_wa_2.setValue(self.designconfig.wa2)
+                    self.GD_tau.setValue(self.designconfig.tau)
+                    self.GD_wrg.setValue(self.designconfig.wrg)
+                    self.GD_gamma.setValue(self.designconfig.gamma)
 
-                self.plotAll(self.designconfig)
+                    self.plotAll(self.designconfig)
 
-                self.filter_stages = self.filter_design.stages
-                self.stage_list.clear()
-                for stage in self.filter_stages:
-                    self.stage_list.addItem(stage.getLabel())
-                    self.combo_polo1.model().item(stage.pole1 + 1).setEnabled(False)
-                    self.combo_polo2.model().item(stage.pole1 + 1).setEnabled(False)
-                    self.combo_polo1.model().item(stage.pole2 + 1).setEnabled(False)
-                    self.combo_polo2.model().item(stage.pole2 + 1).setEnabled(False)
-                    self.combo_cero1.model().item(stage.zero1 + 1).setEnabled(False)
-                    self.combo_cero2.model().item(stage.zero1 + 1).setEnabled(False)
-                    self.combo_cero1.model().item(stage.zero2 + 1).setEnabled(False)
-                    self.combo_cero2.model().item(stage.zero2 + 1).setEnabled(False)
-                '''except:
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Critical)
-                msg.setWindowTitle("Error!")
-                msg.setText("Error crítico intentando abrir el archivo!")
-                msg.exec_()'''
+                    self.filter_stages = self.filter_design.stages
+                    self.stage_list.clear()
+                    for stage in self.filter_stages:
+                        self.stage_list.addItem(stage.getLabel())
+                        self.combo_polo1.model().item(stage.pole1 + 1).setEnabled(False)
+                        self.combo_polo2.model().item(stage.pole1 + 1).setEnabled(False)
+                        self.combo_polo1.model().item(stage.pole2 + 1).setEnabled(False)
+                        self.combo_polo2.model().item(stage.pole2 + 1).setEnabled(False)
+                        self.combo_cero1.model().item(stage.zero1 + 1).setEnabled(False)
+                        self.combo_cero2.model().item(stage.zero1 + 1).setEnabled(False)
+                        self.combo_cero1.model().item(stage.zero2 + 1).setEnabled(False)
+                        self.combo_cero2.model().item(stage.zero2 + 1).setEnabled(False)
+                except:
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setWindowTitle("Error!")
+                    msg.setText("Error crítico intentando abrir el archivo!")
+                    msg.exec_()
                 return True
         return False
 
