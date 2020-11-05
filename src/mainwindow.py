@@ -306,6 +306,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = ChebyshevI(designconfig)
             elif aprox == 'Bessel':
                 z, p, k = Bessel(designconfig)
+            elif aprox == 'Cauer':
+                z, p, k = Cauer(designconfig)
 
             try:
                 filter_system = signal.ZerosPolesGain(z, p, k)
