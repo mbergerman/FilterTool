@@ -106,8 +106,12 @@ def Cauer(designconfig):
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
-    return signal.ellip(N, designconfig.Ap, designconfig.Aa, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
+    z, p, k = signal.ellip(N, designconfig.Ap, designconfig.Aa, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
 
 def setMaxQ(maxQ, poles):
     for i in range(len(poles)):
