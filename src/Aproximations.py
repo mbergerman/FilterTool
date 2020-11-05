@@ -62,6 +62,9 @@ def Bessel(designconfig):
         w, th = signal.freqs(tb, ta, w)
         gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
 
+    if n < designconfig.minord: n = designconfig.minord
+    if n > designconfig.maxord: n = designconfig.maxord
+
     z, p, k = signal.bessel(n, 1, 'low', analog=True, output='zpk', norm='delay')
 
     for i in range(len(p)):
