@@ -77,5 +77,17 @@ def Bessel(designconfig):
 
     return z, p, k
 
-def Cauer():
-    return
+def Cauer(designconfig):
+    type = designconfig.getType()
+    signaltypes = {'Pasa Bajos': 'lowpass', 'Pasa Altos': 'highpass', 'Pasa Banda': 'bandpass',
+                       'Rechaza Banda': 'bandstop'}
+    if type == 'Pasa Bajos' or type == 'Pasa Altos':
+         N, Wn = signal.ellipord(designconfig.wp, designconfig.wa, designconfig.Ap, designconfig.Aa, True)
+    elif type == 'Pasa Banda' or type == 'Rechaza Banda':
+        N, Wn = signal.ellipord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa],
+                                    designconfig.Ap, designconfig.Aa, True)
+    else:
+        return [[], [], 0]
+    N = max(min(N, designconfig.maxord), designconfig.minord)
+    return signal.ellipord(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+
