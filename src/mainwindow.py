@@ -1,10 +1,11 @@
 from src.ui.mainwindow import *
 import numpy as np
-from numpy import linspace, logspace, cos, sin, heaviside, log10, floor, zeros, ones, pi
+from numpy import linspace, logspace, cos, sin, heaviside, log10, floor, zeros, ones, pi, diff, unwrap
 import sys
 import os
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QApplication, QWidget, QPushButton, QAction, QLineEdit, QMessageBox, QRadioButton, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QApplication, QWidget, QPushButton, QAction, QLineEdit, \
+    QMessageBox, QRadioButton, QInputDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 
@@ -25,7 +26,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Init
-        self.setFixedSize(1200, 675)
+        self.setFixedSize(1290, 700)
         self.stackedWidget.setCurrentIndex(0)
         self.tabPlots.setCurrentIndex(0)
         self.updateType()
@@ -36,7 +37,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.max_page = 1
         self.designconfig = DesignConfig()
         self.num_plots = self.tabPlots.count()
-        self.plot_layouts = [self.plotlayout_1, self.plotlayout_2, self.plotlayout_3, self.plotlayout_4, self.plotlayout_5, self.plotlayout_6, self.plotlayout_7]
+        self.plot_layouts = [self.plotlayout_1, self.plotlayout_2, self.plotlayout_3, self.plotlayout_4,
+                             self.plotlayout_5, self.plotlayout_6, self.plotlayout_7]
         self.filter_stages = dict()
         self.editingStage = False
         self.editingStageIndex = 0
@@ -58,7 +60,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.stage_list.itemClicked.connect(self.updateStageView)
 
         # Plots
-        self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4, 'Escalón': 5, 'Máximo Q': 6}
+        self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4,
+                           'Escalón': 5, 'Máximo Q': 6}
         self.figure = [Figure() for x in range(self.num_plots)]
         self.canvas = [FigureCanvas(self.figure[x]) for x in range(self.num_plots)]
         self.axes = [self.figure[x].subplots() for x in range(self.num_plots)]
@@ -66,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             layout.addWidget(NavigationToolbar(self.canvas[x], self))
             layout.addWidget(self.canvas[x])
             self.figure[x].tight_layout()
-            self.axes[x].grid()
+            self.axes[x].grid(True, which='both')
         self.axes[0].set_xscale('log')
         self.axes[1].set_xscale('log')
         self.axes[2].set_xscale('log')
@@ -81,20 +84,44 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.axes2.grid()
 
     def nextPage(self):
-        self.page = min(self.page+1, self.max_page)
+        self.page = min(self.page + 1, self.max_page)
         self.stackedWidget.setCurrentIndex(self.page)
         return
 
     def prevPage(self):
-        self.page = max(self.page-1, 0)
+        self.page = max(self.page - 1, 0)
         self.stackedWidget.setCurrentIndex(self.page)
         return
 
+    def set_A_Template(self):
+        self.GD_tau.setEnabled(False)
+        self.GD_wrg.setEnabled(False)
+        self.GD_gamma.setEnabled(False)
+        self.spin_Ap.setEnabled(True)
+        self.spin_Aa.setEnabled(True)
+        self.spin_wp.setEnabled(True)
+        self.spin_wa.setEnabled(True)
+        self.plantilla_box.setCurrentIndex(0)
+        return
+
+    def set_GD_Template(self):
+        self.GD_tau.setEnabled(True)
+        self.GD_wrg.setEnabled(True)
+        self.GD_gamma.setEnabled(True)
+        self.spin_Ap.setEnabled(False)
+        self.spin_Aa.setEnabled(False)
+        self.spin_wp.setEnabled(False)
+        self.spin_wp_2.setEnabled(False)
+        self.spin_wa.setEnabled(False)
+        self.spin_wa_2.setEnabled(False)
+        self.plantilla_box.setCurrentIndex(1)
+        return
+
     def saveFile(self):
-        pass # TO-DO
+        pass  # TO-DO
 
     def openFile(self):
-        pass # TO-DO
+        pass  # TO-DO
 
     def updateType(self):
         type = self.combo_tipo.currentText()
@@ -106,10 +133,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.label_wp.setText('Frecuencia ωp+' if w_band else 'Frecuencia ωp')
         self.label_wa.setText('Frecuencia ωa+' if w_band else 'Frecuencia ωa')
+
         return
 
     def updateAprox(self):
-        #aprox = self.combo_aprox.currentText()
+        aprox = self.combo_aprox.currentText()
+
+        if aprox == 'Gauss' or aprox == 'Bessel':
+            self.set_GD_Template()
+        else:
+            self.set_A_Template()
         return
 
     def plotAll(self, designconfig):
@@ -118,13 +151,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         denorm = self.spin_denorm.value()
         minord = self.spin_minord.value()
         maxord = self.spin_maxord.value()
-        qmax =  self.spin_qmax.value()
+        qmax = self.spin_qmax.value()
         Ap = self.spin_Ap.value()
         Aa = self.spin_Aa.value()
         wp = self.spin_wp.value()
         wa = self.spin_wa.value()
         wp2 = self.spin_wp_2.value()
         wa2 = self.spin_wa_2.value()
+        tau = self.GD_tau.value()
+        wrg = self.GD_wrg.value()
+        gamma = self.GD_gamma.value()
 
         # Mensaje advertencia: Parametros invalidos
         msg = QMessageBox()
@@ -154,18 +190,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.axes2.clear()
             self.axes2.grid()
 
-            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2)
+            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau,
+                                            wrg, gamma)
             wpn = 1
             dwa = wa - wa2
             dwp = wp - wp2
             if type == 'Pasa Bajos':
-                won = wa/wp
+                won = wa / wp
             elif type == 'Pasa Altos':
-                won = wp/wa
+                won = wp / wa
             elif type == 'Pasa Banda':
-                won = dwa/dwp
+                won = dwa / dwp
             elif type == 'Rechaza Banda':
-                won = dwp/dwa
+                won = dwp / dwa
 
             if self.check_plantilla.isChecked():
                 self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
@@ -178,12 +215,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = ChebyshevI(designconfig)
             elif aprox == 'Chebyshev II':
                 z, p, k = ChebyshevI(designconfig)
+            elif aprox == 'Bessel':
+                z, p, k = Bessel(designconfig)
 
-            #try:
+            # try:
             filter_system = signal.ZerosPolesGain(z, p, k)
             # Atenuacion y Fase
-            lowerfreq = min(wa, wp, wa2, wp2) / 10
-            higherfreq = max(wa, wp, wa2, wp2) * 10
+            if type == 'Pasa Bajos' or type == 'Pasa Altos':
+                lowerfreq = wp / 10
+                higherfreq = wa * 10
+            elif type == 'Pasa Banda' or type == 'Rechaza Banda':
+                lowerfreq = min(wa, wp, wa2, wp2) / 10
+                higherfreq = max(wa, wp, wa2, wp2) * 10
+            elif aprox == 'Bessel' or aprox == 'Gauss':
+                lowerfreq = wrg/10
+                higherfreq = wrg * 10
+
             x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
             Gain = signal.bode(filter_system, x)
             Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
@@ -191,8 +238,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
 
             # Retardo de Grupo
-            w, gd = signal.group_delay(signal.zpk2tf(z, p, k))
-            self.getPlotAxes('Retardo de Grupo').semilogx(w, gd)
+            w, h = signal.freqs_zpk(z, p, k, x)
+            gd = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
+            self.getPlotAxes('Retardo de Grupo').semilogx(w[1:], gd, 'k')
 
             # Polos y Ceros
             self.stage_list.clear()
@@ -207,9 +255,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plotPolesAndZeros(z, p)
 
             # Respuestas temporales
-            t, y = signal.impulse(filter_system)
+            t, y = signal.impulse(filter_system, N = 10000)
             self.getPlotAxes('Impulso').plot(t, y, 'k')
-            t, y = signal.step(filter_system)
+            t, y = signal.step(filter_system, N = 10000)
             self.getPlotAxes('Escalón').plot(t, y, 'k')
 
             # Máximo Q
@@ -228,7 +276,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.figure2.tight_layout()
             self.canvas2.draw()
 
-        pass # TO-DO
+        pass  # TO-DO
 
     def plotTemplate(self, type, Ap, Aa, wp, wa, wp2, wa2):
         if type == 'Pasa Bajos':
@@ -284,17 +332,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         poles_labels = dict()
         zeros_labels = dict()
         for i, pole in enumerate(p):
-            self.combo_polo1.addItem('Polo '+str(i+1))
-            self.combo_polo2.addItem('Polo '+str(i+1))
+            self.combo_polo1.addItem('Polo ' + str(i + 1))
+            self.combo_polo2.addItem('Polo ' + str(i + 1))
             self.getPlotAxes('Polos y Ceros').plot(pole.real, pole.imag, 'rx', markersize=10)
             xy = (pole.real, pole.imag)
-            poles_labels[xy] = 'Polo ' + str(i+1) if xy not in poles_labels else poles_labels[xy]+', '+ str(i+1)
+            poles_labels[xy] = 'Polo ' + str(i + 1) if xy not in poles_labels else poles_labels[xy] + ', ' + str(i + 1)
         for i, zero in enumerate(z):
-            self.combo_cero1.addItem('Cero '+str(i+1))
-            self.combo_cero2.addItem('Cero '+str(i+1))
+            self.combo_cero1.addItem('Cero ' + str(i + 1))
+            self.combo_cero2.addItem('Cero ' + str(i + 1))
             self.getPlotAxes('Polos y Ceros').plot(zero.real, zero.imag, 'bo', markersize=10, fillstyle='none')
             xy = (zero.real, zero.imag)
-            zeros_labels[xy] = 'Cero ' + str(i+1) if xy not in zeros_labels else zeros_labels[xy]+', '+ str(i+1)
+            zeros_labels[xy] = 'Cero ' + str(i + 1) if xy not in zeros_labels else zeros_labels[xy] + ', ' + str(i + 1)
 
         for polexy in poles_labels:
             self.getPlotAxes('Polos y Ceros').annotate(poles_labels[polexy], polexy, textcoords="offset points", xytext=(0, 10), ha='center')
@@ -343,13 +391,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def getStageParameters(self):
         pole1 = self.combo_polo1.currentText()
         pole2 = self.combo_polo2.currentText()
-        pole1 = int(pole1[5:])-1 if pole1.startswith('Polo') else -1
-        pole2 = int(pole2[5:])-1 if pole2.startswith('Polo') else -1
+        pole1 = int(pole1[5:]) - 1 if pole1.startswith('Polo') else -1
+        pole2 = int(pole2[5:]) - 1 if pole2.startswith('Polo') else -1
 
         zero1 = self.combo_cero1.currentText()
         zero2 = self.combo_cero2.currentText()
-        zero1 = int(zero1[5:])-1 if zero1.startswith('Cero') else -1
-        zero2 = int(zero2[5:])-1 if zero2.startswith('Cero') else -1
+        zero1 = int(zero1[5:]) - 1 if zero1.startswith('Cero') else -1
+        zero2 = int(zero2[5:]) - 1 if zero2.startswith('Cero') else -1
 
         cell = self.combo_celda.currentText()
 
@@ -367,17 +415,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             msg.exec_()
         else:
             if pole1 >= 0:
-                self.combo_polo1.model().item(pole1+1).setEnabled(False)
-                self.combo_polo2.model().item(pole1+1).setEnabled(False)
+                self.combo_polo1.model().item(pole1 + 1).setEnabled(False)
+                self.combo_polo2.model().item(pole1 + 1).setEnabled(False)
             if pole2 >= 0:
-                self.combo_polo1.model().item(pole2+1).setEnabled(False)
-                self.combo_polo2.model().item(pole2+1).setEnabled(False)
+                self.combo_polo1.model().item(pole2 + 1).setEnabled(False)
+                self.combo_polo2.model().item(pole2 + 1).setEnabled(False)
             if zero1 >= 0:
-                self.combo_cero1.model().item(zero1+1).setEnabled(False)
-                self.combo_cero2.model().item(zero1+1).setEnabled(False)
+                self.combo_cero1.model().item(zero1 + 1).setEnabled(False)
+                self.combo_cero2.model().item(zero1 + 1).setEnabled(False)
             if zero2 >= 0:
-                self.combo_cero1.model().item(zero2+1).setEnabled(False)
-                self.combo_cero2.model().item(zero2+1).setEnabled(False)
+                self.combo_cero1.model().item(zero2 + 1).setEnabled(False)
+                self.combo_cero2.model().item(zero2 + 1).setEnabled(False)
             self.combo_polo1.setCurrentIndex(0)
             self.combo_polo2.setCurrentIndex(0)
             self.combo_cero1.setCurrentIndex(0)
@@ -407,19 +455,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if pole1 >= 0:
                     self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
                     self.combo_polo2.model().item(pole1 + 1).setEnabled(True)
-                    self.combo_polo1.setCurrentIndex(pole1+1)
+                    self.combo_polo1.setCurrentIndex(pole1 + 1)
                 if pole2 >= 0:
                     self.combo_polo1.model().item(pole2 + 1).setEnabled(True)
                     self.combo_polo2.model().item(pole2 + 1).setEnabled(True)
-                    self.combo_polo2.setCurrentIndex(pole2+1)
+                    self.combo_polo2.setCurrentIndex(pole2 + 1)
                 if zero1 >= 0:
                     self.combo_cero1.model().item(zero1 + 1).setEnabled(True)
                     self.combo_cero2.model().item(zero1 + 1).setEnabled(True)
-                    self.combo_cero1.setCurrentIndex(zero1+1)
+                    self.combo_cero1.setCurrentIndex(zero1 + 1)
                 if zero2 >= 0:
                     self.combo_cero1.model().item(zero2 + 1).setEnabled(True)
                     self.combo_cero2.model().item(zero2 + 1).setEnabled(True)
-                    self.combo_cero2.setCurrentIndex(zero2+1)
+                    self.combo_cero2.setCurrentIndex(zero2 + 1)
                 return True
             else:
                 msg = QMessageBox()
@@ -449,32 +497,32 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         selection = self.stage_list.selectedItems()
         if len(selection) > 0:
             index = self.stage_list.row(selection[0])
-            old_stage = self.filter_stages[ self.stage_list.takeItem(index).text() ]
+            old_stage = self.filter_stages[self.stage_list.takeItem(index).text()]
             pole1 = old_stage.pole1
             pole2 = old_stage.pole2
             zero1 = old_stage.zero1
             zero2 = old_stage.zero2
             if pole1 >= 0:
-                self.combo_polo1.model().item(pole1+1).setEnabled(True)
-                self.combo_polo2.model().item(pole1+1).setEnabled(True)
+                self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
+                self.combo_polo2.model().item(pole1 + 1).setEnabled(True)
             if pole2 >= 0:
-                self.combo_polo1.model().item(pole2+1).setEnabled(True)
-                self.combo_polo2.model().item(pole2+1).setEnabled(True)
+                self.combo_polo1.model().item(pole2 + 1).setEnabled(True)
+                self.combo_polo2.model().item(pole2 + 1).setEnabled(True)
             if zero1 >= 0:
-                self.combo_cero1.model().item(zero1+1).setEnabled(True)
-                self.combo_cero2.model().item(zero1+1).setEnabled(True)
+                self.combo_cero1.model().item(zero1 + 1).setEnabled(True)
+                self.combo_cero2.model().item(zero1 + 1).setEnabled(True)
             if zero2 >= 0:
-                self.combo_cero1.model().item(zero2+1).setEnabled(True)
-                self.combo_cero2.model().item(zero2+1).setEnabled(True)
+                self.combo_cero1.model().item(zero2 + 1).setEnabled(True)
+                self.combo_cero2.model().item(zero2 + 1).setEnabled(True)
             del old_stage
             return True
         return False
 
     def updateStageView(self):
-        pass # TO-DO
+        pass  # TO-DO
 
     def getPlotAxes(self, type):
         if type in self.plot_types:
-            return self.axes[ self.plot_types[type] ]
+            return self.axes[self.plot_types[type]]
         elif type == 'Polos y Ceros 2':
             return self.axes2

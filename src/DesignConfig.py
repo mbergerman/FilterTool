@@ -15,6 +15,9 @@ class DesignConfig:
         self.wa = 0
         self.wp2 = 0
         self.wa2 = 0
+        self.tau = 0
+        self.wrg = 0
+        self.gamma = 0
 
     def setType(self, type):
         self.type = self.type if type not in self.filter_types else self.filter_types.index(type)
@@ -28,7 +31,7 @@ class DesignConfig:
     def getAprox(self):
         return self.filter_types[self.aprox]
 
-    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2):
+    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma):
         self.setType(type)
         self.setAprox(aprox)
         self.denorm = denorm
@@ -41,3 +44,6 @@ class DesignConfig:
         self.wa = wa
         self.wp2 = wp2
         self.wa2 = wa2
+        self.tau = tau
+        self.wrg = wrg
+        self.gamma = gamma
