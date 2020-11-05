@@ -4,8 +4,9 @@ from src.FilterStage import *
 
 class FilterDesign:
 
-    def __init__(self, dc = None, stages = None, poles = [], zeros = []):
+    def __init__(self, dc = None, gain = 0, stages = None, poles = [], zeros = []):
         self.dc = dc
+        self.gain = gain
         self.stages = stages
         self.poles = poles
         self.zeros = zeros
@@ -28,6 +29,9 @@ class FilterDesign:
             f.write('DesignConfig\n')
             if self.dc != None:
                 f.write(str(self.dc))
+
+            f.write('Gain\n')
+            f.write('{}\n'.format(self.gain))
 
             f.write('FilterStages\n')
             if self.stages != None:
@@ -60,17 +64,23 @@ class FilterDesign:
             maxord = int(lines[i+5])
             qmax = float(lines[i+6])
             Ap = float(lines[i+7])
-            Aa = float(lines[i+8])
-            wp = float(lines[i+9])
-            wa = float(lines[i+10])
-            wp2 = float(lines[i+11])
-            wa2 = float(lines[i+12])
-            tau = float(lines[i+13])
-            wrg = float(lines[i+14])
-            gamma = float(lines[i+15])
-            i = i+16
+            ripple = float(lines[i+8])
+            Aa = float(lines[i+9])
+            wp = float(lines[i+10])
+            wa = float(lines[i+11])
+            wp2 = float(lines[i+12])
+            wa2 = float(lines[i+13])
+            tau = float(lines[i+14])
+            wrg = float(lines[i+15])
+            gamma = float(lines[i+16])
+            i = i+17
     
-            self.dc = DesignConfig(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
+            self.dc = DesignConfig(type, aprox, denorm, minord, maxord, qmax, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
+
+            while lines[i] != 'Gain':
+                i += 1
+            self.gain = float(lines[i])
+            i += 1
 
             while lines[i] != 'FilterStages': i+=1
             i += 1
@@ -80,9 +90,10 @@ class FilterDesign:
                 pole2 = int(lines[i+1])
                 zero1 = int(lines[i+2])
                 zero2 = int(lines[i+3])
-                Q = float(lines[i+4])
-                self.stages.append(FilterStage(pole1, pole2, zero1, zero2, Q))
-                i += 5
+                gain = int(lines[i+4])
+                Q = float(lines[i+5])
+                self.stages.append(FilterStage(pole1, pole2, zero1, zero2, gain, Q))
+                i += 6
             i += 1
             self.poles = list()
             while lines[i] != 'Zeros':

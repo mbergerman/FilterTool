@@ -4,14 +4,15 @@ from src.DesignConfig import *
 
 
 def Butterworth(designconfig):
+    Ap, Aa = designconfig.getNormalAttenuations()
+
     type = designconfig.getType()
     signaltypes = {'Pasa Bajos': 'lowpass', 'Pasa Altos': 'highpass', 'Pasa Banda': 'bandpass',
                    'Rechaza Banda': 'bandstop'}
     if type == 'Pasa Bajos' or type == 'Pasa Altos':
-        N, Wn = signal.buttord(designconfig.wp, designconfig.wa, designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.buttord(designconfig.wp, designconfig.wa, Ap, Aa, True)
     elif type == 'Pasa Banda' or type == 'Rechaza Banda':
-        N, Wn = signal.buttord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa],
-                               designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.buttord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], Ap, Aa, True)
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
@@ -24,19 +25,20 @@ def Butterworth(designconfig):
 
 
 def ChebyshevI(designconfig):
+    Ap, Aa = designconfig.getNormalAttenuations()
+
     type = designconfig.getType()
     signaltypes = {'Pasa Bajos': 'lowpass', 'Pasa Altos': 'highpass', 'Pasa Banda': 'bandpass',
                    'Rechaza Banda': 'bandstop'}
     if type == 'Pasa Bajos' or type == 'Pasa Altos':
-        N, Wn = signal.cheb1ord(designconfig.wp, designconfig.wa, designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.cheb1ord(designconfig.wp, designconfig.wa, Ap, Aa, True)
     elif type == 'Pasa Banda' or type == 'Rechaza Banda':
-        N, Wn = signal.cheb1ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa],
-                                designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.cheb1ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], Ap, Aa, True)
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
 
-    z, p, k = signal.cheby1(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+    z, p, k = signal.cheby1(N, Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
     p = setMaxQ(designconfig.qmax, p)
 
@@ -44,19 +46,20 @@ def ChebyshevI(designconfig):
 
 
 def ChebyshevII(designconfig):
+    Ap, Aa = designconfig.getNormalAttenuations()
+
     type = designconfig.getType()
     signaltypes = {'Pasa Bajos': 'lowpass', 'Pasa Altos': 'highpass', 'Pasa Banda': 'bandpass',
                    'Rechaza Banda': 'bandstop'}
     if type == 'Pasa Bajos' or type == 'Pasa Altos':
-        N, Wn = signal.cheb2ord(designconfig.wp, designconfig.wa, designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.cheb2ord(designconfig.wp, designconfig.wa, Ap, Aa, True)
     elif type == 'Pasa Banda' or type == 'Rechaza Banda':
-        N, Wn = signal.cheb2ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa],
-                                designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.cheb2ord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], Ap, Aa, True)
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
 
-    z, p, k = signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
+    z, p, k = signal.cheby2(N, Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
     p = setMaxQ(designconfig.qmax, p)
 
@@ -95,19 +98,20 @@ def Bessel(designconfig):
     return z, p, k
 
 def Cauer(designconfig):
+    Ap, Aa = designconfig.getNormalAttenuations()
+
     type = designconfig.getType()
     signaltypes = {'Pasa Bajos': 'low', 'Pasa Altos': 'high', 'Pasa Banda': 'pass',
                    'Rechaza Banda': 'stop'}
     if type == 'Pasa Bajos' or type == 'Pasa Altos':
-        N, Wn = signal.ellipord(designconfig.wp, designconfig.wa, designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.ellipord(designconfig.wp, designconfig.wa, Ap, Aa, True)
     elif type == 'Pasa Banda' or type == 'Rechaza Banda':
-        N, Wn = signal.ellipord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa],
-                               designconfig.Ap, designconfig.Aa, True)
+        N, Wn = signal.ellipord([designconfig.wp2, designconfig.wp], [designconfig.wa2, designconfig.wa], Ap, Aa, True)
     else:
         return [[], [], 0]
     N = max(min(N, designconfig.maxord), designconfig.minord)
 
-    z, p, k = signal.ellip(N, designconfig.Ap, designconfig.Aa, Wn, btype=signaltypes[type], analog=True, output='zpk')
+    z, p, k = signal.ellip(N, Ap, Aa, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
     p = setMaxQ(designconfig.qmax, p)
 

@@ -1,5 +1,5 @@
 class DesignConfig:
-    def __init__(self, type=0, aprox=0, denorm=0, minord=0, maxord=0, qmax=0, Ap=0, Aa=0, wp=0, wa=0, wp2=0, wa2=0, tau=0, wrg=0, gamma=0):
+    def __init__(self, type=0, aprox=0, denorm=0, minord=0, maxord=0, qmax=0, Ap=0, ripple=0, Aa=0, wp=0, wa=0, wp2=0, wa2=0, tau=0, wrg=0, gamma=0):
         self.filter_types = ['Pasa Bajos', 'Pasa Altos', 'Pasa Banda', 'Rechaza Banda', 'Retardo de Grupo']
         self.aprox_types = ['Butterworth', 'Chebyshev I', 'Chebyshev II', 'Bessel', 'Cauer', 'Legendre', 'Gauss']
 
@@ -10,6 +10,7 @@ class DesignConfig:
         self.maxord = maxord
         self.qmax = qmax
         self.Ap = Ap
+        self.ripple = ripple
         self.Aa = Aa
         self.wp = wp
         self.wa = wa
@@ -31,7 +32,12 @@ class DesignConfig:
     def getAprox(self):
         return self.filter_types[self.aprox]
 
-    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma):
+    def getNormalAttenuations(self):
+        Ap = self.ripple
+        Aa = self.Aa + self.ripple - self.Ap
+        return Ap, Aa
+
+    def setParameters(self, type, aprox, denorm, minord, maxord, qmax, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, wrg, gamma):
         self.setType(type)
         self.setAprox(aprox)
         self.denorm = denorm
@@ -39,6 +45,7 @@ class DesignConfig:
         self.maxord = maxord
         self.qmax = qmax
         self.Ap = Ap
+        self.ripple = ripple
         self.Aa = Aa
         self.wp = wp
         self.wa = wa
@@ -56,6 +63,7 @@ class DesignConfig:
                 str(self.maxord) + '\n' + \
                 str(self.qmax) + '\n' + \
                 str(self.Ap) + '\n' + \
+                str(self.ripple) + '\n' + \
                 str(self.Aa) + '\n' + \
                 str(self.wp) + '\n' + \
                 str(self.wa) + '\n' + \

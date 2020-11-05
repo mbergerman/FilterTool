@@ -48,6 +48,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.editingStage = False
         self.editingStageIndex = 0
         self.current_template = 0
+        self.gain_remaining = 0
 
         # Signals/Slots
         # General
@@ -116,6 +117,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         type = self.combo_tipo.currentText()
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
         self.spin_Ap.setEnabled(True)
+        self.spin_ripple.setEnabled(True)
         self.spin_Aa.setEnabled(True)
         self.spin_wp.setEnabled(True)
         self.spin_wa.setEnabled(True)
@@ -133,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.GD_wrg.setEnabled(True)
         self.GD_gamma.setEnabled(True)
         self.spin_Ap.setEnabled(False)
+        self.spin_ripple.setEnabled(False)
         self.spin_Aa.setEnabled(False)
         self.spin_wp.setEnabled(False)
         self.spin_wp_2.setEnabled(False)
@@ -175,6 +178,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.spin_maxord.setValue(self.designconfig.maxord)
                     self.spin_qmax.setValue(self.designconfig.qmax)
                     self.spin_Ap.setValue(self.designconfig.Ap)
+                    self.spin_ripple.setValue(self.designconfig.ripple)
                     self.spin_Aa.setValue(self.designconfig.Aa)
                     self.spin_wp.setValue(self.designconfig.wp)
                     self.spin_wa.setValue(self.designconfig.wa)
@@ -186,9 +190,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
                     self.plotAll(self.designconfig)
 
+                    self.gain_remaining = self.filter_design.gain
+
                     self.filter_stages = self.filter_design.stages
                     self.stage_list.clear()
                     for stage in self.filter_stages:
+                        self.gain_remaining -= stage.gain
                         self.stage_list.addItem(stage.getLabel())
                         self.combo_polo1.model().item(stage.pole1 + 1).setEnabled(False)
                         self.combo_polo2.model().item(stage.pole1 + 1).setEnabled(False)
@@ -198,6 +205,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         self.combo_cero2.model().item(stage.zero1 + 1).setEnabled(False)
                         self.combo_cero1.model().item(stage.zero2 + 1).setEnabled(False)
                         self.combo_cero2.model().item(stage.zero2 + 1).setEnabled(False)
+                    self.label_gain_total.setText('Restante: {:.3f} dB'.format(self.gain_remaining))
                 except:
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Critical)
@@ -226,12 +234,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def updateAprox(self):
-        '''aprox = self.combo_aprox.currentText()
-
-        if aprox == 'Gauss' or aprox == 'Bessel':
-            self.set_GD_Template()
-        else:
-            self.set_A_Template()'''
         return
 
     def plotAll(self, designconfig):
@@ -242,6 +244,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         maxord = self.spin_maxord.value()
         qmax = self.spin_qmax.value()
         Ap = self.spin_Ap.value()
+        ripple = self.spin_ripple.value()
         Aa = self.spin_Aa.value()
         wp = self.spin_wp.value()
         wa = self.spin_wa.value()
@@ -257,18 +260,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         msg.setWindowTitle("Advertencia!")
         warning_msg = ''
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
-        if (wp == 0 or wa == 0) or \
-            (w_band and (wp2 == 0 or wa2 == 0 or wp2 >= wp or wa2 >= wa)) or \
-            (type == 'Pasa Banda' and (wp >= wa or wp2 <= wa2)) or \
-            (type == 'Rechaza Banda' and (wp <= wa or wp2 >= wa2)) or \
-            (type == 'Pasa Bajos' and wa <= wp) or \
-            (type == 'Pasa Altos' and wp <= wa):
-                warning_msg += "Los parametros para ωp y ωa no son válidos.\n"
-        if Aa <= 0 or Ap <= 0:
-            warning_msg += "Los parametros para Ap y/o Aa no son válidos, ambos deben ser mayores a 0.\n"
-        if minord > maxord:
-            warning_msg += "El orden mínimo debe ser inferior al orden máximo.\n"
-
+        g_delay = type == 'Retardo de Grupo'
+        if not g_delay:
+            if (wp == 0 or wa == 0) or \
+                (w_band and (wp2 == 0 or wa2 == 0 or wp2 >= wp or wa2 >= wa)) or \
+                (type == 'Pasa Banda' and (wp >= wa or wp2 <= wa2)) or \
+                (type == 'Rechaza Banda' and (wp <= wa or wp2 >= wa2)) or \
+                (type == 'Pasa Bajos' and wa <= wp) or \
+                (type == 'Pasa Altos' and wp <= wa):
+                    warning_msg += "Los parametros para ωp y ωa no son válidos.\n"
+            if ripple <= 0:
+                warning_msg += "El valor máximo de ripple debe ser mayor a 0.\n"
+            if Aa <= Ap:
+                warning_msg += "El valor de Aa debe superar al valor de Ap.\n"
+            if minord > maxord:
+                warning_msg += "El orden mínimo debe ser inferior al orden máximo.\n"
         if len(warning_msg) > 0:
             msg.setText(warning_msg)
             msg.exec_()
@@ -280,21 +286,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 ax.clear()
                 ax.grid()
 
-            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
-            wpn = 1
-            dwa = wa - wa2
-            dwp = wp - wp2
-            if type == 'Pasa Bajos':
-                won = wa / wp
-            elif type == 'Pasa Altos':
-                won = wp / wa
-            elif type == 'Pasa Banda':
-                won = dwa / dwp
-            elif type == 'Rechaza Banda':
-                won = dwp / dwa
+            self.filter_design.gain = ripple - Ap
+            self.gain_remaining = self.filter_design.gain
+            self.label_gain_total.setText('Restante: {:.3f} dB'.format(self.gain_remaining))
+
+            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
 
             if self.check_plantilla.isChecked():
-                self.plotTemplate(type, Ap, Aa, wp, wa, wp2, wa2)
+                self.plotTemplate(type, Ap, ripple, Aa, wp, wa, wp2, wa2)
 
             # Calcular aproximación here
             # Falta el tema del orden min max, max q, etc
@@ -310,6 +309,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = Cauer(designconfig)
 
             try:
+                k *= 10**(self.filter_design.gain / 20)
                 filter_system = signal.ZerosPolesGain(z, p, k)
                 # Atenuacion y Fase
                 if type == 'Pasa Bajos' or type == 'Pasa Altos':
@@ -375,7 +375,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         pass  # TO-DO
 
-    def plotTemplate(self, type, Ap, Aa, wp, wa, wp2, wa2):
+    def plotTemplate(self, type, Ap, ripple, Aa, wp, wa, wp2, wa2):
         if type == 'Pasa Bajos':
             x = [wp / 10, wp, wp]
             y = [Ap, Ap, Aa + 10]
@@ -496,6 +496,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         zero1 = int(zero1[5:]) - 1 if zero1.startswith('Cero') else -1
         zero2 = int(zero2[5:]) - 1 if zero2.startswith('Cero') else -1
 
+        gain = self.spin_gain.value()
+
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Advertencia!")
@@ -533,8 +535,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_cero1.setCurrentIndex(0)
             self.combo_cero2.setCurrentIndex(0)
 
+            self.gain_remaining -= gain
+            self.label_gain_total.setText('Restante: {:.3f} dB'.format(self.gain_remaining))
+
             Q = -abs(pole) / (2 * pole.real) if pole.real < 0 else float('inf')
-            return FilterStage(pole1, pole2, zero1, zero2, Q)
+            return FilterStage(pole1, pole2, zero1, zero2, gain, Q)
 
         return None
 
@@ -555,6 +560,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pole2 = current_stage.pole2
                 zero1 = current_stage.zero1
                 zero2 = current_stage.zero2
+                gain = current_stage.gain
+                self.spin_gain.setValue(gain)
+                self.gain_remaining += gain
                 if pole1 >= 0:
                     self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
                     self.combo_polo2.model().item(pole1 + 1).setEnabled(True)
@@ -602,11 +610,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if len(selection) > 0:
             index = self.stage_list.row(selection[0])
             stage = self.filter_stages[self.stage_list.item(index).text()]
-            pole1 = stage.pole1
-            pole2 = stage.pole2
-            zero1 = stage.zero1
-            zero2 = stage.zero2
-            Gain = signal.bode(signal.ZerosPolesGain([zero1, zero2], [pole1, pole2], 1))
+            poles = []
+            zeros = []
+            if stage.pole1 >= 0:
+                poles.append(self.filter_design.poles[stage.pole1])
+            if stage.pole2 >= 0:
+                poles.append(self.filter_design.poles[stage.pole2])
+
+            if stage.zero1 >= 0:
+                zeros.append(self.filter_design.zeros[stage.zero])
+            if stage.zero2 >= 0:
+                zeros.append(self.filter_design.zeros[stage.zero2])
+
+            Gain = signal.bode(signal.ZerosPolesGain(zeros, poles, 10**(stage.gain/20)))
 
             self.getPlotAxes('Respuesta Etapa').clear()
             self.getPlotAxes('Respuesta Etapa').grid()
@@ -631,6 +647,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pole2 = old_stage.pole2
             zero1 = old_stage.zero1
             zero2 = old_stage.zero2
+            gain = old_stage.gain
+            self.gain_remaining += gain
+            self.label_gain_total.setText('Restante: {:.3f} dB'.format(self.gain_remaining))
             if pole1 >= 0:
                 self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
                 self.combo_polo2.model().item(pole1 + 1).setEnabled(True)

@@ -232,7 +232,7 @@
          <x>10</x>
          <y>80</y>
          <width>472</width>
-         <height>205</height>
+         <height>191</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout">
@@ -499,7 +499,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>280</y>
+         <y>270</y>
          <width>171</width>
          <height>41</height>
         </rect>
@@ -519,7 +519,7 @@
        <property name="geometry">
         <rect>
          <x>140</x>
-         <y>550</y>
+         <y>560</y>
          <width>221</width>
          <height>51</height>
         </rect>
@@ -678,9 +678,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>320</y>
+         <y>310</y>
          <width>471</width>
-         <height>221</height>
+         <height>241</height>
         </rect>
        </property>
        <property name="currentIndex">
@@ -693,7 +693,7 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>221</height>
+           <height>241</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_7">
@@ -734,7 +734,7 @@
              <number>3</number>
             </property>
             <property name="minimum">
-             <double>0.000000000000000</double>
+             <double>-300.000000000000000</double>
             </property>
             <property name="maximum">
              <double>300.000000000000000</double>
@@ -747,7 +747,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_Aa">
             <property name="font">
              <font>
@@ -760,7 +760,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="spin_Aa">
             <property name="font">
              <font>
@@ -775,7 +775,7 @@
              <number>3</number>
             </property>
             <property name="minimum">
-             <double>0.000000000000000</double>
+             <double>-300.000000000000000</double>
             </property>
             <property name="maximum">
              <double>300.000000000000000</double>
@@ -788,7 +788,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_wp">
             <property name="font">
              <font>
@@ -801,7 +801,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <widget class="QDoubleSpinBox" name="spin_wp">
             <property name="font">
              <font>
@@ -826,7 +826,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_wp_2">
             <property name="font">
              <font>
@@ -839,7 +839,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_wa_2">
             <property name="font">
              <font>
@@ -852,7 +852,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="6" column="1">
            <widget class="QDoubleSpinBox" name="spin_wa_2">
             <property name="font">
              <font>
@@ -877,7 +877,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="label_check_plantilla_3">
             <property name="font">
              <font>
@@ -890,7 +890,7 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QCheckBox" name="check_plantilla">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -939,7 +939,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_wa">
             <property name="font">
              <font>
@@ -952,7 +952,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="spin_wp_2">
             <property name="font">
              <font>
@@ -977,7 +977,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="5" column="1">
            <widget class="QDoubleSpinBox" name="spin_wa">
             <property name="font">
              <font>
@@ -993,6 +993,47 @@
             </property>
             <property name="maximum">
              <double>1000000000.000000000000000</double>
+            </property>
+            <property name="stepType">
+             <enum>QAbstractSpinBox::DefaultStepType</enum>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_ripple">
+            <property name="font">
+             <font>
+              <family>Rockwell</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Máximo Ripple</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="spin_ripple">
+            <property name="font">
+             <font>
+              <family>Rockwell</family>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="minimum">
+             <double>0.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>300.000000000000000</double>
             </property>
             <property name="stepType">
              <enum>QAbstractSpinBox::DefaultStepType</enum>
@@ -1238,9 +1279,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>160</y>
+         <y>210</y>
          <width>371</width>
-         <height>391</height>
+         <height>341</height>
         </rect>
        </property>
        <property name="font">
@@ -1295,7 +1336,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>90</y>
+         <y>130</y>
          <width>71</width>
          <height>61</height>
         </rect>
@@ -1359,7 +1400,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>90</y>
+         <y>130</y>
          <width>141</width>
          <height>65</height>
         </rect>
@@ -1418,7 +1459,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>90</y>
+         <y>130</y>
          <width>141</width>
          <height>65</height>
         </rect>
@@ -1604,6 +1645,85 @@ QListWidget::item:selected {
        </property>
        <property name="text">
         <string>Graficar</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="formLayoutWidget_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>221</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_5">
+        <property name="horizontalSpacing">
+         <number>10</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_gain">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Ganancia:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="spin_gain">
+          <property name="font">
+           <font>
+            <family>Rockwell</family>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>-300.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>300.000000000000000</double>
+          </property>
+          <property name="stepType">
+           <enum>QAbstractSpinBox::DefaultStepType</enum>
+          </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="label_gain_total">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
+         <y>92</y>
+         <width>141</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>12</pointsize>
+         <underline>false</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Restante: 0.000 dB</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </widget>
