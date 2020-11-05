@@ -1,9 +1,10 @@
 class FilterStage:
-    def __init__(self, p1=-1, p2=-1, z1=-1, z2=-1):
+    def __init__(self, p1=-1, p2=-1, z1=-1, z2=-1, Q = -1):
         self.pole1 = p1
         self.pole2 = p2
         self.zero1 = z1
         self.zero2 = z2
+        self.Q = Q
 
     def setPoles(self, p1, p2):
         self.pole1 = p1
@@ -29,4 +30,4 @@ class FilterStage:
         else:
             zero_text = ' Cero {}, Cero {}\n'.format(self.zero1+1, self.zero2+1)
 
-        return '{}{} Q = {}'.format(pole_text, zero_text, '?')
+        return '{}{} Q = {:.3f}'.format(pole_text, zero_text, self.Q)

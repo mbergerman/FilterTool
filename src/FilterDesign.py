@@ -4,10 +4,22 @@ from src.FilterStage import *
 
 class FilterDesign:
 
-    def __init__(self, dc = None, stages = None):
+    def __init__(self, dc = None, stages = None, poles = None, zeros = None):
         self.dc = dc
         self.stages = stages
+        self.poles = poles
+        self.zeros = zeros
         # Diseño circuital
+
+    def setPolesAndZeros(self, p, z):
+        self.poles = p.copy()
+        self.zeros = z.copy()
+
+    def setDesignConfig(self, dc):
+        self.dc = dc
+
+    def setFilterStages(self, stages):
+        self.stages = stages
 
     def save(self, filename):
         f = open(filename + '.filter', "w")
