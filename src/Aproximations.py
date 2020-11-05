@@ -44,7 +44,7 @@ def ChebyshevII(designconfig):
                                 designconfig.Ap, designconfig.Aa, True)
     else:
         return [[], [], 0]
-
+    N = max(min(N, designconfig.maxord), designconfig.minord)
     return signal.cheby2(N, designconfig.Ap, Wn, btype=signaltypes[type], analog=True, output='zpk')
 
 

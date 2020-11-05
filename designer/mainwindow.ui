@@ -331,17 +331,17 @@
           </item>
           <item>
            <property name="text">
-            <string>Bessel</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>Cauer</string>
            </property>
           </item>
           <item>
            <property name="text">
             <string>Legendre</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Bessel</string>
            </property>
           </item>
           <item>
@@ -518,9 +518,9 @@
       <widget class="QPushButton" name="btn_plot">
        <property name="geometry">
         <rect>
-         <x>100</x>
-         <y>560</y>
-         <width>191</width>
+         <x>140</x>
+         <y>550</y>
+         <width>221</width>
          <height>51</height>
         </rect>
        </property>
@@ -680,7 +680,7 @@
          <x>10</x>
          <y>320</y>
          <width>471</width>
-         <height>241</height>
+         <height>221</height>
         </rect>
        </property>
        <property name="currentIndex">
@@ -693,7 +693,7 @@
            <x>0</x>
            <y>0</y>
            <width>471</width>
-           <height>234</height>
+           <height>221</height>
           </rect>
          </property>
          <layout class="QFormLayout" name="formLayout_7">
@@ -1166,7 +1166,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="decimals">
-             <number>2</number>
+             <number>3</number>
             </property>
             <property name="minimum">
              <double>0.000000000000000</double>
@@ -1238,9 +1238,9 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>90</y>
+         <y>160</y>
          <width>371</width>
-         <height>321</height>
+         <height>391</height>
         </rect>
        </property>
        <property name="font">
@@ -1291,47 +1291,13 @@ QListWidget::item:selected {
         <string>Lista de Etapas:</string>
        </property>
       </widget>
-      <widget class="QWidget" name="verticalLayoutWidget_8">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>50</y>
-         <width>841</width>
-         <height>551</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="plotlayout_poles"/>
-      </widget>
-      <widget class="QLabel" name="label_diagrama">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>0</y>
-         <width>841</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Rockwell</family>
-         <pointsize>18</pointsize>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>Diagrama de Polos y Ceros</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
       <widget class="QPushButton" name="btn_new_stage">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>540</y>
-         <width>91</width>
-         <height>41</height>
+         <x>310</x>
+         <y>90</y>
+         <width>71</width>
+         <height>61</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -1360,9 +1326,9 @@ QListWidget::item:selected {
       <widget class="QPushButton" name="btn_delete_stage">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>540</y>
-         <width>91</width>
+         <x>280</x>
+         <y>560</y>
+         <width>101</width>
          <height>41</height>
         </rect>
        </property>
@@ -1393,7 +1359,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>430</y>
+         <y>90</y>
          <width>141</width>
          <height>65</height>
         </rect>
@@ -1452,7 +1418,7 @@ QListWidget::item:selected {
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>430</y>
+         <y>90</y>
          <width>141</width>
          <height>65</height>
         </rect>
@@ -1507,84 +1473,12 @@ QListWidget::item:selected {
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="formLayoutWidget_5">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>500</y>
-         <width>372</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <layout class="QFormLayout" name="formLayout_6">
-        <property name="horizontalSpacing">
-         <number>20</number>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_celda">
-          <property name="font">
-           <font>
-            <family>Rockwell</family>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Celda:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="combo_celda">
-          <item>
-           <property name="text">
-            <string>Sallen-Key</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Rauch / Delyannis-Friend</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Doble T</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Sedra</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Kerwin-Huelsman-Newcomb</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Tow-Thomas</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Ackerberg-Mossberg</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Fleischer-Tow</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </widget>
       <widget class="QPushButton" name="btn_edit_stage">
        <property name="geometry">
         <rect>
-         <x>210</x>
-         <y>540</y>
-         <width>91</width>
+         <x>10</x>
+         <y>560</y>
+         <width>101</width>
          <height>41</height>
         </rect>
        </property>
@@ -1609,6 +1503,107 @@ QListWidget::item:selected {
        </property>
        <property name="text">
         <string>Editar</string>
+       </property>
+      </widget>
+      <widget class="QTabWidget" name="tabPlots_2">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>10</y>
+         <width>841</width>
+         <height>591</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Rockwell</family>
+         <pointsize>12</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab2_1">
+        <attribute name="title">
+         <string>Polos y Ceros</string>
+        </attribute>
+        <widget class="QWidget" name="verticalLayoutWidget_12">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>841</width>
+           <height>561</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="plotlayout2_1"/>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab2_2">
+        <attribute name="title">
+         <string>Respuesta en Frecuencia Total</string>
+        </attribute>
+        <widget class="QWidget" name="verticalLayoutWidget_13">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>841</width>
+           <height>561</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="plotlayout2_2"/>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab2_3">
+        <attribute name="title">
+         <string>Respuesta en Frecuencia de la Etapa</string>
+        </attribute>
+        <widget class="QWidget" name="verticalLayoutWidget_14">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>841</width>
+           <height>561</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="plotlayout2_3"/>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QPushButton" name="btn_plot_stage">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>560</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+ background-color: rgb(240, 240, 240);
+ border-style: outset;
+ border-width: 5px;
+ border-radius: 10px;
+ border-color: gray;
+ font: Rockwell;
+ font-size: 20px;
+ }
+ QPushButton:pressed {
+ background-color: rgb(220, 220, 220);
+ border-style: inset;
+ }
+ QPushButton:hover:!pressed {
+ background-color: rgb(220, 220, 220);
+ }
+</string>
+       </property>
+       <property name="text">
+        <string>Graficar</string>
        </property>
       </widget>
      </widget>
@@ -1713,7 +1708,7 @@ QListWidget::item:selected {
    <widget class="QPushButton" name="btn_save">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>150</x>
       <y>650</y>
       <width>121</width>
       <height>41</height>
@@ -1740,6 +1735,38 @@ QListWidget::item:selected {
     </property>
     <property name="text">
      <string>Guardar</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_save_2">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>650</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+ background-color: rgb(240, 240, 240);
+ border-style: outset;
+ border-width: 5px;
+ border-radius: 10px;
+ border-color: gray;
+ font: Rockwell;
+ font-size: 24px;
+ }
+ QPushButton:pressed {
+ background-color: rgb(220, 220, 220);
+ border-style: inset;
+ }
+ QPushButton:hover:!pressed {
+ background-color: rgb(220, 220, 220);
+ }
+</string>
+    </property>
+    <property name="text">
+     <string>Exportar PDF</string>
     </property>
    </widget>
   </widget>

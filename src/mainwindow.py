@@ -29,6 +29,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setFixedSize(1290, 700)
         self.stackedWidget.setCurrentIndex(0)
         self.tabPlots.setCurrentIndex(0)
+        self.tabPlots_2.setCurrentIndex(0)
         self.updateType()
         self.updateAprox()
 
@@ -39,6 +40,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.num_plots = self.tabPlots.count()
         self.plot_layouts = [self.plotlayout_1, self.plotlayout_2, self.plotlayout_3, self.plotlayout_4,
                              self.plotlayout_5, self.plotlayout_6, self.plotlayout_7]
+        self.num_plots2 = self.tabPlots_2.count()
+        self.plot_layouts2 = [self.plotlayout2_1, self.plotlayout2_2, self.plotlayout2_3]
         self.filter_stages = dict()
         self.editingStage = False
         self.editingStageIndex = 0
@@ -56,12 +59,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Etapa 2
         self.btn_new_stage.clicked.connect(self.newStage)
         self.btn_edit_stage.clicked.connect(self.editStage)
+        self.btn_plot_stage.clicked.connect(self.plotStage)
         self.btn_delete_stage.clicked.connect(self.deleteStage)
         self.stage_list.itemClicked.connect(self.updateStageView)
 
         # Plots
         self.plot_types = {'Atenuación': 0, 'Fase': 1, 'Retardo de Grupo': 2, 'Polos y Ceros': 3, 'Impulso': 4,
                            'Escalón': 5, 'Máximo Q': 6}
+        self.plot_types2 = {'Polos y Ceros 2': 0, 'Respuesta Total': 1, 'Respuesta Etapa': 2}
         self.figure = [Figure() for x in range(self.num_plots)]
         self.canvas = [FigureCanvas(self.figure[x]) for x in range(self.num_plots)]
         self.axes = [self.figure[x].subplots() for x in range(self.num_plots)]
@@ -75,13 +80,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.axes[2].set_xscale('log')
 
         # Polos y ceros Etapa 2
-        self.figure2 = Figure()
-        self.canvas2 = FigureCanvas(self.figure2)
-        self.axes2 = self.figure2.subplots()
-        self.plotlayout_poles.addWidget(NavigationToolbar(self.canvas2, self))
-        self.plotlayout_poles.addWidget(self.canvas2)
-        self.figure2.tight_layout()
-        self.axes2.grid()
+        self.figure2 = [Figure() for x in range(self.num_plots2)]
+        self.canvas2 = [FigureCanvas(self.figure2[x]) for x in range(self.num_plots2)]
+        self.axes2 = [self.figure2[x].subplots() for x in range(self.num_plots2)]
+        for x, layout in enumerate(self.plot_layouts2):
+            layout.addWidget(NavigationToolbar(self.canvas2[x], self))
+            layout.addWidget(self.canvas2[x])
+            self.figure2[x].tight_layout()
+            self.axes2[x].grid(True, which='both')
 
     def nextPage(self):
         self.page = min(self.page + 1, self.max_page)
@@ -94,9 +100,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def set_A_Template(self):
+        for i in range(self.combo_aprox.count()):
+            self.combo_aprox.model().item(i).setEnabled(i != 5 and i != 6)
+
+        self.combo_aprox.setCurrentIndex(0)
         self.GD_tau.setEnabled(False)
         self.GD_wrg.setEnabled(False)
         self.GD_gamma.setEnabled(False)
+
+        type = self.combo_tipo.currentText()
+        w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
         self.spin_Ap.setEnabled(True)
         self.spin_Aa.setEnabled(True)
         self.spin_wp.setEnabled(True)
@@ -105,6 +118,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def set_GD_Template(self):
+        for i in range(self.combo_aprox.count()):
+            self.combo_aprox.model().item(i).setEnabled(i == 5 or i == 6)
+
+        self.combo_aprox.setCurrentIndex(5)
+
         self.GD_tau.setEnabled(True)
         self.GD_wrg.setEnabled(True)
         self.GD_gamma.setEnabled(True)
@@ -126,13 +144,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def updateType(self):
         type = self.combo_tipo.currentText()
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
-        self.label_wp_2.setEnabled(w_band)
-        self.spin_wp_2.setEnabled(w_band)
-        self.label_wa_2.setEnabled(w_band)
-        self.spin_wa_2.setEnabled(w_band)
+        g_delay = type == 'Retardo de Grupo'
+        if not g_delay:
+            self.set_A_Template()
+            self.label_wp_2.setEnabled(w_band)
+            self.spin_wp_2.setEnabled(w_band)
+            self.label_wa_2.setEnabled(w_band)
+            self.spin_wa_2.setEnabled(w_band)
 
-        self.label_wp.setText('Frecuencia ωp+' if w_band else 'Frecuencia ωp')
-        self.label_wa.setText('Frecuencia ωa+' if w_band else 'Frecuencia ωa')
+            self.label_wp.setText('Frecuencia ωp+' if w_band else 'Frecuencia ωp')
+            self.label_wa.setText('Frecuencia ωa+' if w_band else 'Frecuencia ωa')
+        else:
+            self.set_GD_Template()
 
         return
 
@@ -187,11 +210,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for x, ax in enumerate(self.axes):
                 ax.clear()
                 ax.grid()
-            self.axes2.clear()
-            self.axes2.grid()
+            for x, ax in enumerate(self.axes2):
+                ax.clear()
+                ax.grid()
 
-            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau,
-                                            wrg, gamma)
+            self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
             wpn = 1
             dwa = wa - wa2
             dwp = wp - wp2
@@ -236,6 +259,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
             self.getPlotAxes('Atenuación').semilogx(Attenuation[0], Attenuation[1], 'k')
             self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
+            self.getPlotAxes('Respuesta Total').semilogx(Gain[0], Gain[1], 'k')
 
             # Retardo de Grupo
             w, h = signal.freqs_zpk(z, p, k, x)
@@ -273,8 +297,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for x, canv in enumerate(self.canvas):
                 self.figure[x].tight_layout()
                 canv.draw()
-            self.figure2.tight_layout()
-            self.canvas2.draw()
+            for x, canv in enumerate(self.canvas2):
+                self.figure2[x].tight_layout()
+                canv.draw()
 
         pass  # TO-DO
 
@@ -399,8 +424,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         zero1 = int(zero1[5:]) - 1 if zero1.startswith('Cero') else -1
         zero2 = int(zero2[5:]) - 1 if zero2.startswith('Cero') else -1
 
-        cell = self.combo_celda.currentText()
-
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle("Advertencia!")
@@ -430,7 +453,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_polo2.setCurrentIndex(0)
             self.combo_cero1.setCurrentIndex(0)
             self.combo_cero2.setCurrentIndex(0)
-            return FilterStage(pole1, pole2, zero1, zero2, cell)
+            return FilterStage(pole1, pole2, zero1, zero2)
 
         return None
 
@@ -442,6 +465,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.editingStage = True
                 self.editingStageIndex = self.stage_list.row(selection[0])
                 self.btn_new_stage.setEnabled(False)
+                self.btn_plot_stage.setEnabled(False)
                 self.btn_delete_stage.setEnabled(False)
                 self.stage_list.setEnabled(False)
                 index = self.editingStageIndex
@@ -450,8 +474,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 pole2 = current_stage.pole2
                 zero1 = current_stage.zero1
                 zero2 = current_stage.zero2
-                cell = current_stage.cell
-                self.combo_celda.setCurrentIndex(self.combo_celda.findText(cell))
                 if pole1 >= 0:
                     self.combo_polo1.model().item(pole1 + 1).setEnabled(True)
                     self.combo_polo2.model().item(pole1 + 1).setEnabled(True)
@@ -482,6 +504,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.btn_edit_stage.setText('Editar')
                 self.editingStage = False
                 self.btn_new_stage.setEnabled(True)
+                self.btn_plot_stage.setEnabled(True)
                 self.btn_delete_stage.setEnabled(True)
                 self.stage_list.setEnabled(True)
 
@@ -492,6 +515,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 return True
             else:
                 return False
+
+    def plotStage(self):
+        selection = self.stage_list.selectedItems()
+        if len(selection) > 0:
+            index = self.stage_list.row(selection[0])
+            stage = self.filter_stages[self.stage_list.item(index).text()]
+            pole1 = stage.pole1
+            pole2 = stage.pole2
+            zero1 = stage.zero1
+            zero2 = stage.zero2
+            Gain = signal.bode(signal.ZerosPolesGain([zero1, zero2], [pole1, pole2], 1))
+
+            self.getPlotAxes('Respuesta Etapa').clear()
+            self.getPlotAxes('Respuesta Etapa').grid()
+            self.getPlotAxes('Respuesta Etapa').semilogx(Gain[0], Gain[1], 'k')
+            self.figure2[2].tight_layout()
+            self.canvas2[2].draw()
+            return True
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Advertencia!")
+            msg.setText("Debe seleccionar una etapa para graficar.")
+            msg.exec_()
+            return False
 
     def deleteStage(self):
         selection = self.stage_list.selectedItems()
@@ -516,7 +564,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.combo_cero2.model().item(zero2 + 1).setEnabled(True)
             del old_stage
             return True
-        return False
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Advertencia!")
+            msg.setText("Debe seleccionar una etapa para borrar.")
+            msg.exec_()
+            return False
 
     def updateStageView(self):
         pass  # TO-DO
@@ -524,5 +578,5 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def getPlotAxes(self, type):
         if type in self.plot_types:
             return self.axes[self.plot_types[type]]
-        elif type == 'Polos y Ceros 2':
-            return self.axes2
+        elif type in self.plot_types2:
+            return self.axes2[self.plot_types2[type]]
