@@ -18,6 +18,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from src.DesignConfig import *
 from src.Aproximations import *
 from src.FilterStage import *
+from src.FilterDesign import *
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -34,6 +35,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.updateAprox()
 
         # Variables
+        self.filter_design = FilterDesign()
         self.page = 0
         self.max_page = 1
         self.designconfig = DesignConfig()
@@ -45,6 +47,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filter_stages = dict()
         self.editingStage = False
         self.editingStageIndex = 0
+        self.current_template = 0
 
         # Signals/Slots
         # General
@@ -103,7 +106,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(self.combo_aprox.count()):
             self.combo_aprox.model().item(i).setEnabled(i != 5 and i != 6)
 
-        self.combo_aprox.setCurrentIndex(0)
+        if self.combo_aprox.currentIndex() == 5 or self.combo_aprox.currentIndex() == 6:
+            self.combo_aprox.setCurrentIndex(0)
+
         self.GD_tau.setEnabled(False)
         self.GD_wrg.setEnabled(False)
         self.GD_gamma.setEnabled(False)
@@ -121,7 +126,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(self.combo_aprox.count()):
             self.combo_aprox.model().item(i).setEnabled(i == 5 or i == 6)
 
-        self.combo_aprox.setCurrentIndex(5)
+        if self.combo_aprox.currentIndex() != 5 and self.combo_aprox.currentIndex() != 6:
+            self.combo_aprox.setCurrentIndex(5)
 
         self.GD_tau.setEnabled(True)
         self.GD_wrg.setEnabled(True)
@@ -160,12 +166,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return
 
     def updateAprox(self):
-        aprox = self.combo_aprox.currentText()
+        '''aprox = self.combo_aprox.currentText()
 
         if aprox == 'Gauss' or aprox == 'Bessel':
             self.set_GD_Template()
         else:
-            self.set_A_Template()
+            self.set_A_Template()'''
         return
 
     def plotAll(self, designconfig):
@@ -241,58 +247,62 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif aprox == 'Bessel':
                 z, p, k = Bessel(designconfig)
 
-            # try:
-            filter_system = signal.ZerosPolesGain(z, p, k)
-            # Atenuacion y Fase
-            if type == 'Pasa Bajos' or type == 'Pasa Altos':
-                lowerfreq = wp / 10
-                higherfreq = wa * 10
-            elif type == 'Pasa Banda' or type == 'Rechaza Banda':
-                lowerfreq = min(wa, wp, wa2, wp2) / 10
-                higherfreq = max(wa, wp, wa2, wp2) * 10
-            elif aprox == 'Bessel' or aprox == 'Gauss':
-                lowerfreq = wrg/10
-                higherfreq = wrg * 10
+            try:
+                filter_system = signal.ZerosPolesGain(z, p, k)
+                # Atenuacion y Fase
+                if type == 'Pasa Bajos' or type == 'Pasa Altos':
+                    lowerfreq = wp / 10
+                    higherfreq = wa * 10
+                elif type == 'Pasa Banda' or type == 'Rechaza Banda':
+                    lowerfreq = min(wa, wp, wa2, wp2) / 10
+                    higherfreq = max(wa, wp, wa2, wp2) * 10
+                elif aprox == 'Bessel' or aprox == 'Gauss':
+                    lowerfreq = wrg/10
+                    higherfreq = wrg * 10
 
-            x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
-            Gain = signal.bode(filter_system, x)
-            Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
-            self.getPlotAxes('Atenuación').semilogx(Attenuation[0], Attenuation[1], 'k')
-            self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
-            self.getPlotAxes('Respuesta Total').semilogx(Gain[0], Gain[1], 'k')
+                x = np.logspace((log10(lowerfreq)), (log10(higherfreq)), num=1000)
+                Gain = signal.bode(filter_system, x)
+                Attenuation = signal.bode(signal.ZerosPolesGain(p, z, 1 / k), x)
+                self.getPlotAxes('Atenuación').semilogx(Attenuation[0], Attenuation[1], 'k')
+                self.getPlotAxes('Fase').semilogx(Gain[0], Gain[2], 'k')
+                self.getPlotAxes('Respuesta Total').semilogx(Gain[0], Gain[1], 'k')
 
-            # Retardo de Grupo
-            w, h = signal.freqs_zpk(z, p, k, x)
-            gd = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
-            self.getPlotAxes('Retardo de Grupo').semilogx(w[1:], gd, 'k')
+                # Retardo de Grupo
+                w, h = signal.freqs_zpk(z, p, k, x)
+                gd = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
+                self.getPlotAxes('Retardo de Grupo').semilogx(w[1:], gd, 'k')
 
-            # Polos y Ceros
-            self.stage_list.clear()
-            self.combo_polo1.clear()
-            self.combo_polo2.clear()
-            self.combo_cero1.clear()
-            self.combo_cero2.clear()
-            self.combo_polo1.addItem('-')
-            self.combo_polo2.addItem('-')
-            self.combo_cero1.addItem('-')
-            self.combo_cero2.addItem('-')
-            self.plotPolesAndZeros(z, p)
+                # Polos y Ceros
+                self.stage_list.clear()
+                self.combo_polo1.clear()
+                self.combo_polo2.clear()
+                self.combo_cero1.clear()
+                self.combo_cero2.clear()
+                self.combo_polo1.addItem('-')
+                self.combo_polo2.addItem('-')
+                self.combo_cero1.addItem('-')
+                self.combo_cero2.addItem('-')
+                self.plotPolesAndZeros(z, p)
 
-            # Respuestas temporales
-            t, y = signal.impulse(filter_system, N = 1000)
-            self.getPlotAxes('Impulso').plot(t, y, 'k')
-            t, y = signal.step(filter_system, N = 1000)
-            self.getPlotAxes('Escalón').plot(t, y, 'k')
+                # Respuestas temporales
+                t, y = signal.impulse(filter_system, N = 1000)
+                self.getPlotAxes('Impulso').plot(t, y, 'k')
+                t, y = signal.step(filter_system, N = 1000)
+                self.getPlotAxes('Escalón').plot(t, y, 'k')
 
-            # Máximo Q
-            self.plotQFactor(z, p)
+                # Máximo Q
+                self.plotQFactor(z, p)
 
-            '''except:
+                # Guardar Datos
+                self.filter_design.setDesignConfig(self.designconfig)
+                self.filter_design.setPolesAndZeros(p, z)
+
+            except:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("Error crítico intentando generar gráficos!")
-                msg.exec_()'''
+                msg.exec_()
 
             for x, canv in enumerate(self.canvas):
                 self.figure[x].tight_layout()
@@ -436,13 +446,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif pole1 == pole2 and zero1 == zero2 and pole1 < 0 and zero1 < 0:
             msg.setText("Se debe seleccionar al menos un polo o un cero.")
             msg.exec_()
+        elif pole1 >= 0 and pole2 >= 0 and self.filter_design.poles[pole1].real != self.filter_design.poles[pole2].real:
+            print(self.filter_design.poles[pole1].real, self.filter_design.poles[pole2].real)
+            msg.setText("Los polos deben ser complejos conjugados.")
+            msg.exec_()
         else:
+            pole = None
             if pole1 >= 0:
                 self.combo_polo1.model().item(pole1 + 1).setEnabled(False)
                 self.combo_polo2.model().item(pole1 + 1).setEnabled(False)
+                pole = self.filter_design.poles[pole1]
             if pole2 >= 0:
                 self.combo_polo1.model().item(pole2 + 1).setEnabled(False)
                 self.combo_polo2.model().item(pole2 + 1).setEnabled(False)
+                pole = self.filter_design.poles[pole2]
             if zero1 >= 0:
                 self.combo_cero1.model().item(zero1 + 1).setEnabled(False)
                 self.combo_cero2.model().item(zero1 + 1).setEnabled(False)
@@ -453,7 +470,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_polo2.setCurrentIndex(0)
             self.combo_cero1.setCurrentIndex(0)
             self.combo_cero2.setCurrentIndex(0)
-            return FilterStage(pole1, pole2, zero1, zero2)
+
+            Q = -abs(pole) / (2 * pole.real) if pole.real < 0 else float('inf')
+            return FilterStage(pole1, pole2, zero1, zero2, Q)
 
         return None
 
