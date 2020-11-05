@@ -4,7 +4,7 @@ from src.FilterStage import *
 
 class FilterDesign:
 
-    def __init__(self, dc = None, stages = None, poles = None, zeros = None):
+    def __init__(self, dc = None, stages = None, poles = [], zeros = []):
         self.dc = dc
         self.stages = stages
         self.poles = poles
@@ -22,67 +22,74 @@ class FilterDesign:
         self.stages = stages
 
     def save(self, filename):
-        f = open(filename + '.filter', "w")
-        f.write('# Electronic Filter Design Tool v0.1\n')
+        with open(filename, "w") as f:
+            f.write('# Electronic Filter Design Tool v0.1\n')
 
-        f.write('{}\n'.format(self.dc.type))
-        f.write('{}\n'.format(self.dc.aprox))
-        f.write('{}\n'.format(self.dc.denorm))
-        f.write('{}\n'.format(self.dc.minord))
-        f.write('{}\n'.format(self.dc.maxord))
-        f.write('{}\n'.format(self.dc.qmax))
-        f.write('{}\n'.format(self.dc.Ap))
-        f.write('{}\n'.format(self.dc.Aa))
-        f.write('{}\n'.format(self.dc.wp))
-        f.write('{}\n'.format(self.dc.wa))
-        f.write('{}\n'.format(self.dc.wp2))
-        f.write('{}\n'.format(self.dc.type))
-        f.write('{}\n'.format(self.dc.wa2))
-        f.write('{}\n'.format(self.dc.tau))
-        f.write('{}\n'.format(self.dc.wrg))
-        f.write('{}\n'.format(self.dc.gamma))
+            f.write('DesignConfig\n')
+            if self.dc != None:
+                f.write(str(self.dc))
 
-        for stage in self.stages:
-            f.write('{}\n'.format(stage.pole1))
-            f.write('{}\n'.format(stage.pole2))
-            f.write('{}\n'.format(stage.zero1))
-            f.write('{}\n'.format(stage.zero2))
+            f.write('FilterStages\n')
+            if self.stages != None:
+                for stage in self.stages.values():
+                    f.write(str(stage))
 
-        f.close()
+            f.write('Poles\n')
+            if len(self.poles) > 0:
+                for p in self.poles:
+                    f.write(str(p))
+                    f.write('\n')
+
+            f.write('Zeros\n')
+            if len(self.zeros) > 0:
+                for z in self.zeros:
+                    f.write(str(z))
+                    f.write('\n')
 
     def open(self, filename):
-        f = open(filename, "r")
-        lines = f.readlines()
-        for i, line in enumerate(lines):
-            lines[i].strip('\n')
+        with open(filename, "r") as f:
+            lines = f.readlines()
+            for i in range(len(lines)):
+                lines[i] = lines[i].rstrip()
+            i = 0
+            while lines[i] != 'DesignConfig': i+=1
+            type = int(lines[i+1])
+            aprox = int(lines[i+2])
+            denorm = float(lines[i+3])
+            minord = int(lines[i+4])
+            maxord = int(lines[i+5])
+            qmax = float(lines[i+6])
+            Ap = float(lines[i+7])
+            Aa = float(lines[i+8])
+            wp = float(lines[i+9])
+            wa = float(lines[i+10])
+            wp2 = float(lines[i+11])
+            wa2 = float(lines[i+12])
+            tau = float(lines[i+13])
+            wrg = float(lines[i+14])
+            gamma = float(lines[i+15])
+            i = i+16
+    
+            self.dc = DesignConfig(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
 
-        type = int(line[1])
-        aprox = int(line[2])
-        denorm = float(line[3])
-        minord = int(line[4])
-        maxord = int(line[5])
-        qmax = float(line[6])
-        Ap = float(line[7])
-        Aa = float(line[8])
-        wp = float(line[9])
-        wa = float(line[10])
-        wp2 = float(line[11])
-        wa2 = float(line[12])
-        tau = float(line[13])
-        wrg = float(line[14])
-        gamma = float(line[15])
-
-        self.dc = DesignConfig()
-        self.dc.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
-
-        self.stages = list()
-        i = 16
-        while i < len(lines):
-            pole1 = complex(line[i])
-            pole2 = complex(line[i+1])
-            zero1 = complex(line[i+2])
-            zero2 = complex(line[i+3])
-            self.stages.append(FilterStage(pole1, pole2, zero1, zero2))
-            i += 4
-
-        f.close()
+            while lines[i] != 'FilterStages': i+=1
+            i += 1
+            self.stages = list()
+            while lines[i] != 'Poles':
+                pole1 = int(lines[i])
+                pole2 = int(lines[i+1])
+                zero1 = int(lines[i+2])
+                zero2 = int(lines[i+3])
+                Q = float(lines[i+4])
+                self.stages.append(FilterStage(pole1, pole2, zero1, zero2, Q))
+                i += 5
+            i += 1
+            self.poles = list()
+            while lines[i] != 'Zeros':
+                self.poles.append(complex(lines[i]))
+                i += 1
+            i += 1
+            while i < len(lines) and len(lines[i]) > 0:
+                self.zeros.append(complex(lines[i]))
+                i += 1
+        return
