@@ -336,11 +336,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             elif aprox == 'Chebyshev I':
                 z, p, k = ChebyshevI(designconfig)
             elif aprox == 'Chebyshev II':
-                z, p, k = ChebyshevI(designconfig)
+                z, p, k = ChebyshevII(designconfig)
             elif aprox == 'Bessel':
                 z, p, k = Bessel(designconfig)
             elif aprox == 'Cauer':
                 z, p, k = Cauer(designconfig)
+            elif aprox == 'Gauss':
+                z, p, k = Gauss(designconfig)
 
             try:
                 k *= 10**(self.filter_design.gain / 20)
@@ -381,6 +383,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.plotPolesAndZeros(z, p)
 
                 # Respuestas temporales
+
                 t, y = signal.impulse(filter_system, N = 1000)
                 self.getPlotAxes('Impulso').plot(t, y, 'k')
                 t, y = signal.step(filter_system, N = 1000)

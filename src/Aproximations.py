@@ -80,8 +80,7 @@ def Bessel(designconfig):
         w, th = signal.freqs(tb, ta, w)
         gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
 
-    if n < designconfig.minord: n = designconfig.minord
-    if n > designconfig.maxord: n = designconfig.maxord
+    n = max(min(n, designconfig.maxord), designconfig.minord)
 
     z, p, k = signal.bessel(n, 1, 'low', analog=True, output='zpk', norm='delay')
 
@@ -96,6 +95,7 @@ def Bessel(designconfig):
     p = setMaxQ(designconfig.qmax, p)
 
     return z, p, k
+
 
 def Cauer(designconfig):
     Ap, Aa = designconfig.getNormalAttenuations()
@@ -116,6 +116,72 @@ def Cauer(designconfig):
     p = setMaxQ(designconfig.qmax, p)
 
     return z, p, k
+
+
+def Gauss(designconfig):
+    n = 1
+    wrgN = designconfig.wrg * designconfig.tau
+    z, p, k = gauss_poly(n, 1)
+    b, a = signal.zpk2tf(z, p, k)
+    w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
+    w, th = signal.freqs(b, a, w)
+    gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+    while gd[499] < (1 - (designconfig.gamma / 100)):
+        n += 1
+        z, p, k = gauss_poly(n, 1)
+        b, a = signal.zpk2tf(z, p, k)
+        w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
+        w, th = signal.freqs(b, a, w)
+        gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+
+    n = max(min(n, designconfig.maxord), designconfig.minord)
+
+    z, p, k = gauss_poly(n, 1)
+
+    for i in range(len(p)):
+        p[i] = p[i] / designconfig.tau
+
+    for i in range(len(z)):
+        z[i] = z[i] / designconfig.tau
+
+    k = k / (designconfig.tau ** (n - len(z)))
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
+
+
+def gauss_poly(n, tau):
+    a = []
+    wtow2 = np.poly1d([1, 0, 0])
+    for i in range(n, 0, -1):
+        a.append(((-tau) ** i) / np.math.factorial(i))  # desarrollo del polinomio e**x
+
+    a.append(1)
+    poly = np.poly1d(a)(wtow2)  # cambio de variable x => w**2
+    p = []
+    roots = np.roots(poly)  # saco las raices
+    for i in range(len(roots)):
+        c_root = complex(roots[i])
+        if np.sign(c_root.real) == -1:  # me quedo con aquellas de parte real negativa
+            p.append(c_root)
+
+    k = 1
+
+    z = []
+
+    w = np.logspace(-5, -4, 1000)
+    b, a = signal.zpk2tf(z, p, k)
+    w, th = signal.freqs(b, a, w)
+    gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+
+    for i in range(len(p)):
+        p[i] = p[i] * gd[0]
+    for i in range(len(p)):
+        k = p[i] * k
+    return z, p, k
+
+
 
 def setMaxQ(maxQ, poles):
     for i in range(len(poles)):
