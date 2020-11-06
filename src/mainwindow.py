@@ -56,6 +56,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btn_prev.clicked.connect(self.prevPage)
         self.btn_save.clicked.connect(self.saveFile)
         self.btn_open.clicked.connect(self.openFile)
+        self.btn_export.clicked.connect(self.exportFile)
         # Etapa 1
         self.btn_plot.clicked.connect(lambda: self.plotAll(self.designconfig))
         self.combo_tipo.currentIndexChanged.connect(self.updateType)
@@ -156,7 +157,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 msg.setWindowTitle("Error!")
                 msg.setText("Error crítico intentando guardar el archivo!")
                 msg.exec_()
-
         return
 
     def openFile(self):
@@ -215,6 +215,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 return True
         return False
 
+    def exportFile(self):
+        self.updateDesignConfig()
+        self.filter_design.setDesignConfig(self.designconfig)
+        self.filter_design.setFilterStages(self.filter_stages)
+        filename = QFileDialog.getSaveFileName(self, "Exportar Archivo", "filter.pdf", "PDF (*.pdf)", "PDF (*.pdf)")[0]
+        if len(filename) > 0:
+            #try:
+            self.filter_design.export(filename)
+            '''except:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle("Error!")
+                msg.setText("Error crítico intentando exportar el archivo!")
+                msg.exec_()'''
+        return
+
     def updateType(self):
         type = self.combo_tipo.currentText()
         w_band = type == 'Pasa Banda' or type == 'Rechaza Banda'
@@ -235,6 +251,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def updateAprox(self):
         return
+
+    def updateDesignConfig(self):
+        self.designconfig.setType(self.combo_tipo.currentText())
+        self.designconfig.setAprox(self.combo_aprox.currentText())
+        self.designconfig.denorm = self.spin_denorm.value()
+        self.designconfig.minord = self.spin_minord.value()
+        self.designconfig.maxord = self.spin_maxord.value()
+        self.designconfig.qmax = self.spin_qmax.value()
+        self.designconfig.Ap = self.spin_Ap.value()
+        self.designconfig.ripple = self.spin_ripple.value()
+        self.designconfig.Aa = self.spin_Aa.value()
+        self.designconfig.wp = self.spin_wp.value()
+        self.designconfig.wa = self.spin_wa.value()
+        self.designconfig.wp2 = self.spin_wp_2.value()
+        self.designconfig.wa2 = self.spin_wa_2.value()
+        self.designconfig.tau = self.GD_tau.value()
+        self.designconfig.wrg = self.GD_wrg.value()
+        self.designconfig.gamma = self.GD_gamma.value()
 
     def plotAll(self, designconfig):
         type = self.combo_tipo.currentText()
@@ -292,7 +326,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
 
-            if self.check_plantilla.isChecked():
+            if (self.check_plantilla.isChecked() and not g_delay) or (self.check_plantilla_GD.isChecked() and g_delay):
                 self.plotTemplate(type, Ap, ripple, Aa, wp, wa, wp2, wa2)
 
             # Calcular aproximación here

@@ -924,9 +924,9 @@ class Ui_MainWindow(object):
 " }\n"
 "")
         self.btn_save.setObjectName("btn_save")
-        self.btn_save_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_save_2.setGeometry(QtCore.QRect(290, 650, 171, 41))
-        self.btn_save_2.setStyleSheet("QPushButton {\n"
+        self.btn_export = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_export.setGeometry(QtCore.QRect(290, 650, 171, 41))
+        self.btn_export.setStyleSheet("QPushButton {\n"
 " background-color: rgb(240, 240, 240);\n"
 " border-style: outset;\n"
 " border-width: 5px;\n"
@@ -943,7 +943,7 @@ class Ui_MainWindow(object):
 " background-color: rgb(220, 220, 220);\n"
 " }\n"
 "")
-        self.btn_save_2.setObjectName("btn_save_2")
+        self.btn_export.setObjectName("btn_export")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -1020,7 +1020,7 @@ class Ui_MainWindow(object):
         self.btn_prev.setText(_translate("MainWindow", "Anterior"))
         self.btn_open.setText(_translate("MainWindow", "Abrir"))
         self.btn_save.setText(_translate("MainWindow", "Guardar"))
-        self.btn_save_2.setText(_translate("MainWindow", "Exportar PDF"))
+        self.btn_export.setText(_translate("MainWindow", "Exportar PDF"))
 
 
 if __name__ == "__main__":

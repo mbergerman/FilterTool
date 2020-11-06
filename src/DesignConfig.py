@@ -72,3 +72,55 @@ class DesignConfig:
                 str(self.tau) + '\n' + \
                 str(self.wrg) + '\n' + \
                 str(self.gamma) + '\n'
+
+    def export_names(self):
+        txt = 'Tipo de Filtro:\n'
+        txt += 'Aproximación:\n'
+        txt += 'Rango de Desnormalización:\n'
+        txt += 'Orden Mínimo:\n'
+        txt += 'Orden Máximo:\n'
+        txt += 'Q Máximo:\n'
+        w_band = self.filter_types[self.type] == 'Pasa Banda' or self.filter_types[self.type] == 'Rechaza Banda'
+        if self.filter_types[self.type] != 'Retardo de Grupo':
+            txt += 'Banda de paso (Ap):\n'
+            txt += 'Máximo Ripple:\n'
+            txt += 'Banda de atenuación (Aa):\n'
+            if w_band:
+                txt += 'Frecuencia ωp+:\n'
+                txt += 'Frecuencia ωp-:\n'
+                txt += 'Frecuencia ωa+:\n'
+                txt += 'Frecuencia ωa-:\n'
+            else:
+                txt += 'Frecuencia ωp:\n'
+                txt += 'Frecuencia ωa:\n'
+        else:
+            txt += 'Retardo en banda de paso (𝜏(0)):\n'
+            txt += 'Frecuencia ωRG:\n'
+            txt += 'Error maximo de retardo en ωRG (𝛾%):\n'
+        return txt
+
+    def export_values(self):
+        txt = '{}\n'.format(self.filter_types[self.type])
+        txt += '{}\n'.format(self.aprox_types[self.aprox])
+        txt += '{} %\n'.format(self.denorm)
+        txt += '{}\n'.format(self.minord)
+        txt += '{}\n'.format(self.maxord)
+        txt += '{}\n'.format(self.qmax)
+        w_band = self.filter_types[self.type] == 'Pasa Banda' or self.filter_types[self.type] == 'Rechaza Banda'
+        if self.filter_types[self.type] != 'Retardo de Grupo':
+            txt += '{} dB\n'.format(self.Ap)
+            txt += '{} dB\n'.format(self.ripple)
+            txt += '{} dB\n'.format(self.Aa)
+            if w_band:
+                txt += '{}\n'.format(self.wp)
+                txt += '{}\n'.format(self.wp_2)
+                txt += '{}\n'.format(self.wa)
+                txt += '{}\n'.format(self.wa_2)
+            else:
+                txt += '{}\n'.format(self.wp)
+                txt += '{}\n'.format(self.wa)
+        else:
+            txt += '{}\n'.format(self.tau)
+            txt += '{}\n'.format(self.wrg)
+            txt += '{}\n'.format(self.gamma)
+        return txt
