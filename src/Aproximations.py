@@ -198,7 +198,7 @@ def Legendre(designconfig):
     elif type == 'Pasa Banda' or type == 'Rechaza Banda':
         waN = max(abs(designconfig.wa2 - designconfig.wa), abs(designconfig.wp2 - designconfig.wp)) / min(abs(designconfig.wa2 - designconfig.wa), abs(designconfig.wp2 - designconfig.wp))
         w0 = np.sqrt(designconfig.wp2*designconfig.wp)
-        B = abs(designconfig.wp2 - designconfig.wp) / w0
+        B = abs(designconfig.wp2 - designconfig.wp)
     else:
         return [[], [], 0]
 
