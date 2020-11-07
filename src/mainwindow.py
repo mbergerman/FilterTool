@@ -343,6 +343,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = Cauer(designconfig)
             elif aprox == 'Gauss':
                 z, p, k = Gauss(designconfig)
+            elif aprox == 'Legendre':
+                z, p, k = Legendre(designconfig)
 
             try:
                 k *= 10**(self.filter_design.gain / 20)

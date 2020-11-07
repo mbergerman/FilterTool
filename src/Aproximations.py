@@ -1,4 +1,4 @@
-from scipy import signal
+from scipy import signal, special
 import numpy as np
 from src.DesignConfig import *
 
@@ -73,12 +73,14 @@ def Bessel(designconfig):
     w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
     w, th = signal.freqs(tb, ta, w)
     gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
-    while gd[500] < (1 - (designconfig.gamma / 100)):
+    index = np.where(w >= wrgN)[0][0]
+    while gd[index] < (1 - (designconfig.gamma / 100)):
         n += 1
         tb, ta = signal.bessel(N=n, Wn=1, btype='low', analog=True, output='ba', norm='delay')
         w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
         w, th = signal.freqs(tb, ta, w)
         gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+        index = np.where(w >= wrgN)[0][0]
 
     n = max(min(n, designconfig.maxord), designconfig.minord)
 
@@ -126,13 +128,15 @@ def Gauss(designconfig):
     w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
     w, th = signal.freqs(b, a, w)
     gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
-    while gd[499] < (1 - (designconfig.gamma / 100)):
+    index = np.where(w >= wrgN)[0][0]
+    while gd[index] < (1 - (designconfig.gamma / 100)):
         n += 1
         z, p, k = gauss_poly(n, 1)
         b, a = signal.zpk2tf(z, p, k)
         w = np.linspace(wrgN - 0.5, wrgN + 0.5, 1000)
         w, th = signal.freqs(b, a, w)
         gd = -np.diff(np.unwrap(np.angle(th))) / np.diff(w)
+        index = np.where(w >= wrgN)[0][0]
 
     n = max(min(n, designconfig.maxord), designconfig.minord)
 
@@ -181,6 +185,128 @@ def gauss_poly(n, tau):
         k = p[i] * k
     return z, p, k
 
+
+def Legendre(designconfig):
+    Ap, Aa = designconfig.getNormalAttenuations()
+
+    w0 = 0
+    B = 0
+
+    type = designconfig.getType()
+    if type == 'Pasa Bajos' or type == 'Pasa Altos':
+        waN = max(designconfig.wa, designconfig.wp) / min(designconfig.wa, designconfig.wp)
+    elif type == 'Pasa Banda' or type == 'Rechaza Banda':
+        waN = max(abs(designconfig.wa2 - designconfig.wa), abs(designconfig.wp2 - designconfig.wp)) / min(abs(designconfig.wa2 - designconfig.wa), abs(designconfig.wp2 - designconfig.wp))
+        w0 = np.sqrt(designconfig.wp2*designconfig.wp)
+        B = abs(designconfig.wp2 - designconfig.wp) / w0
+    else:
+        return [[], [], 0]
+
+    eps = ((10 ** (Ap / 10)) - 1) ** (1 / 2)
+
+    n = 1
+    z, p, k = Legendre_poly(n, eps)
+    H = signal.ZerosPolesGain(z, p, k)
+    w = np.linspace(waN - 0.5, waN + 0.5, 5000)
+    w, bode, fase = signal.bode(H, w)
+    index = np.where(w >= waN)[0][0]
+    while abs(bode[index]) < Aa:
+        n += 1
+        z, p, k = Legendre_poly(n, eps)
+        H = signal.ZerosPolesGain(z, p, k)
+        w = np.linspace(waN - 0.5, waN + 0.5, 5000)
+        w, bode, fase = signal.bode(H, w)
+        index = np.where(w >= waN)[0][0]
+
+    n = max(min(n, designconfig.maxord), designconfig.minord)
+    z, p, k = Legendre_poly(n, eps)
+
+    if type == 'Pasa Bajos':
+        z, p, k = signal.lp2lp_zpk(z, p, k, designconfig.wp)
+    elif type == 'Pasa Altos':
+        z, p, k = signal.lp2hp_zpk(z, p, k, designconfig.wp)
+    elif type == 'Pasa Banda':
+        z, p, k = signal.lp2bp_zpk(z, p, k, w0, B)
+    elif type == 'Rechaza Banda':
+        z, p, k = signal.lp2bs_zpk(z, p, k, w0, B)
+
+    p = setMaxQ(designconfig.qmax, p)
+
+    return z, p, k
+
+def sumprod(a, p):
+    a_p = []
+
+    for i in range(len(p)):
+        a_p.append(a[i] * p[i])
+
+    ps = np.poly1d([0])
+    for i in range(len(p)):
+        ps = ps + a_p[i]
+
+    return ps ** 2
+
+
+def get_L(n):
+    # valor de k
+    if n % 2 == 0:
+        k = int(n / 2 - 1)
+    else:
+        k = int((n - 1) / 2)
+    # polinomios de legendre
+    P = []
+    for i in range(k + 1):
+        P.append(special.legendre(i))
+    # coeficientes de la suma de los polinomios
+    a = []
+    for i in range(k + 1):
+        if n % 2 == 0:
+            if k % 2 == 0:
+                if i == 0:
+                    a.append(1 / (((k + 1) * (k + 2)) ** (1 / 2)))
+                elif i % 2 == 0:
+                    a.append((2 * i + 1) * a[0])
+                else:
+                    a.append(0)
+            else:
+                if i % 2 == 0:
+                    a.append(0)
+                elif i == 1:
+                    a.append(3 / (((k + 1) * (k + 2)) ** (1 / 2)))
+                else:
+                    a.append((2 * i + 1) * a[1] / 3)
+        else:
+            if i == 0:
+                a.append(1 / ((2 ** (1 / 2)) * (k + 1)))
+            else:
+                a.append((2 * i + 1) * a[0])
+    # suma de polinomios
+    p_sum = sumprod(a, P)
+    if n % 2 == 0:
+        p_sum = np.poly1d([1, 1]) * p_sum
+
+    # integral entre -1 y 2*w**2 - 1
+    x_to_2w2m1 = np.poly1d([2, 0, -1])
+    integ = np.polyint(p_sum)
+
+    return integ(x_to_2w2m1) - integ(-1)
+
+
+def Legendre_poly(n, eps):
+    poly = 1 + (eps**2) * get_L(n)
+    p = []
+    roots = 1j*np.roots(poly)  # saco las raices
+    for i in range(len(roots)):
+        c_root = complex(roots[i])
+        if np.sign(c_root.real) == -1:  # me quedo con aquellas de parte real negativa
+            p.append(c_root)
+
+    z = []
+    k = 1
+    for i in range(len(p)):
+        k = k * p[i]
+
+    return z, p, k
 
 
 def setMaxQ(maxQ, poles):
