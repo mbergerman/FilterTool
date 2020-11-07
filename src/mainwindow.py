@@ -419,7 +419,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if type == 'Pasa Bajos':
             x = [wp / 10, wp, wp]
             y = [Ap, Ap, Aa + 10]
+            if Ap <= 0:
+                yR = [Ap-ripple, Ap-ripple]
+            else:
+                yR = [ripple, ripple]
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.axes[0].semilogx(x[:-1], yR, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wa, wa, wa * 10]
             y = [Ap - 10, Aa, Aa]
@@ -432,6 +437,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wp, wp, wp * 10]
             y = [Aa + 10, Ap, Ap]
+            if Ap <= 0:
+                yR = [Ap-ripple, Ap-ripple]
+            else:
+                yR = [ripple, ripple]
+            self.axes[0].semilogx(x[1:], yR, 'b--', color='#28658a', linewidth=2)
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
         elif type == 'Pasa Banda':
@@ -441,6 +451,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wp2, wp2, wp, wp]
             y = [Aa + 10, Ap, Ap, Aa + 10]
+            if Ap <= 0:
+                yR = [Ap-ripple, Ap-ripple]
+            else:
+                yR = [ripple, ripple]
+            self.axes[0].semilogx(x[1:-1], yR, 'b--', color='#28658a', linewidth=2)
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wa, wa, wa * 10]
@@ -450,6 +465,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif type == 'Rechaza Banda':
             x = [wp2 / 10, wp2, wp2]
             y = [Ap, Ap, Aa + 10]
+            if Ap <= 0:
+                yR = [Ap-ripple, Ap-ripple]
+            else:
+                yR = [ripple, ripple]
+            self.axes[0].semilogx(x[:-1], yR, 'b--', color='#28658a', linewidth=2)
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wa2, wa2, wa, wa]
@@ -458,6 +478,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.axes[0].fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             x = [wp, wp, wp * 10]
             y = [Aa + 10, Ap, Ap]
+            if Ap <= 0:
+                yR = [Ap-ripple, Ap-ripple]
+            else:
+                yR = [ripple, ripple]
+            self.axes[0].semilogx(x[1:], yR, 'b--', color='#28658a', linewidth=2)
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
         elif type == 'Retardo de Grupo':

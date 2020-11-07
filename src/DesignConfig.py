@@ -96,7 +96,7 @@ class DesignConfig:
         else:
             txt += 'Retardo en banda de paso (𝜏(0)):\n'
             txt += 'Frecuencia ωRG:\n'
-            txt += 'Error maximo de retardo en ωRG (𝛾%):\n'
+            txt += 'Retardo máximo en ωRG (𝛾%):\n'
         return txt
 
     def export_values(self):
@@ -113,9 +113,9 @@ class DesignConfig:
             txt += '{} dB\n'.format(self.Aa)
             if w_band:
                 txt += '{}\n'.format(self.wp)
-                txt += '{}\n'.format(self.wp_2)
+                txt += '{}\n'.format(self.wp2)
                 txt += '{}\n'.format(self.wa)
-                txt += '{}\n'.format(self.wa_2)
+                txt += '{}\n'.format(self.wa2)
             else:
                 txt += '{}\n'.format(self.wp)
                 txt += '{}\n'.format(self.wa)

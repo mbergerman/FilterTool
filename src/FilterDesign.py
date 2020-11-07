@@ -100,6 +100,11 @@ class FilterDesign:
             if type == 'Pasa Bajos':
                 x = [wp / 10, wp, wp]
                 y = [Ap, Ap, Aa + 10]
+                if Ap <= 0:
+                    yR = [Ap - ripple, Ap - ripple]
+                else:
+                    yR = [ripple, ripple]
+                plt.semilogx(x[:-1], yR, 'b--', color='#28658a', linewidth=2)
                 plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
                 plt.fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wa, wa, wa * 10]
@@ -113,6 +118,11 @@ class FilterDesign:
                 plt.fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wp, wp, wp * 10]
                 y = [Aa + 10, Ap, Ap]
+                if Ap <= 0:
+                    yR = [Ap - ripple, Ap - ripple]
+                else:
+                    yR = [ripple, ripple]
+                plt.semilogx(x[1:], yR, 'b--', color='#28658a', linewidth=2)
                 plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
                 plt.fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             elif type == 'Pasa Banda':
@@ -122,6 +132,11 @@ class FilterDesign:
                 plt.fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wp2, wp2, wp, wp]
                 y = [Aa + 10, Ap, Ap, Aa + 10]
+                if Ap <= 0:
+                    yR = [Ap - ripple, Ap - ripple]
+                else:
+                    yR = [ripple, ripple]
+                plt.semilogx(x[1:-1], yR, 'b--', color='#28658a', linewidth=2)
                 plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
                 plt.fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wa, wa, wa * 10]
@@ -131,6 +146,11 @@ class FilterDesign:
             elif type == 'Rechaza Banda':
                 x = [wp2 / 10, wp2, wp2]
                 y = [Ap, Ap, Aa + 10]
+                if Ap <= 0:
+                    yR = [Ap - ripple, Ap - ripple]
+                else:
+                    yR = [ripple, ripple]
+                plt.semilogx(x[:-1], yR, 'b--', color='#28658a', linewidth=2)
                 plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
                 plt.fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wa2, wa2, wa, wa]
@@ -139,6 +159,11 @@ class FilterDesign:
                 plt.fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
                 x = [wp, wp, wp * 10]
                 y = [Aa + 10, Ap, Ap]
+                if Ap <= 0:
+                    yR = [Ap - ripple, Ap - ripple]
+                else:
+                    yR = [ripple, ripple]
+                plt.semilogx(x[1:], yR, 'b--', color='#28658a', linewidth=2)
                 plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
                 plt.fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
 
@@ -154,8 +179,13 @@ class FilterDesign:
                 z, p, k = Bessel(self.dc)
             elif aprox == 'Cauer':
                 z, p, k = Cauer(self.dc)
+            elif aprox == 'Gauss':
+                z, p, k = Gauss(self.dc)
+            elif aprox == 'Legendre':
+                z, p, k = Legendre(self.dc)
 
-            k *= 10 ** (self.gain / 20)
+            if Ap <= 0:
+                k *= 10 ** (self.filter_design.gain / 20)
             filter_system = signal.ZerosPolesGain(z, p, k)
             # Atenuacion y Fase
             if type == 'Pasa Bajos' or type == 'Pasa Altos':
@@ -201,6 +231,11 @@ class FilterDesign:
             w, h = signal.freqs_zpk(z, p, k, x)
             gd = -np.diff(np.unwrap(np.angle(h))) / np.diff(w)
             plt.semilogx(w[1:], gd, 'k')
+            if aprox == 'Bessel' or aprox == 'Gauss':
+                x = [wrg / 10, wrg, wrg]
+                y = [tau - (tau * gamma / 100), tau - (tau * gamma / 100), 0]
+                plt.semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+                plt.fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
             plt.title('Retardo de Grupo')
             plt.tight_layout()
             pdf.savefig()
