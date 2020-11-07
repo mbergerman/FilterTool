@@ -347,7 +347,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 z, p, k = Legendre(designconfig)
 
             try:
-                k *= 10**(self.filter_design.gain / 20)
+                if Ap <= 0:
+                    k *= 10**(self.filter_design.gain / 20)
                 filter_system = signal.ZerosPolesGain(z, p, k)
                 # Atenuacion y Fase
                 if type == 'Pasa Bajos' or type == 'Pasa Altos':
@@ -549,7 +550,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif pole1 == pole2 and zero1 == zero2 and pole1 < 0 and zero1 < 0:
             msg.setText("Se debe seleccionar al menos un polo o un cero.")
             msg.exec_()
-        elif pole1 >= 0 and pole2 >= 0 and self.filter_design.poles[pole1].real != self.filter_design.poles[pole2].real:
+        elif pole1 >= 0 and pole2 >= 0 and not np.isclose(self.filter_design.poles[pole1].real, self.filter_design.poles[pole2].real):
             print(self.filter_design.poles[pole1].real, self.filter_design.poles[pole2].real)
             msg.setText("Los polos deben ser complejos conjugados.")
             msg.exec_()
@@ -657,7 +658,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 poles.append(self.filter_design.poles[stage.pole2])
 
             if stage.zero1 >= 0:
-                zeros.append(self.filter_design.zeros[stage.zero])
+                zeros.append(self.filter_design.zeros[stage.zero1])
             if stage.zero2 >= 0:
                 zeros.append(self.filter_design.zeros[stage.zero2])
 
