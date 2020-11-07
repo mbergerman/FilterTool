@@ -185,7 +185,7 @@ class FilterDesign:
                 z, p, k = Legendre(self.dc)
 
             if Ap <= 0:
-                k *= 10 ** (self.filter_design.gain / 20)
+                k *= 10 ** (self.gain / 20)
             filter_system = signal.ZerosPolesGain(z, p, k)
             # Atenuacion y Fase
             if type == 'Pasa Bajos' or type == 'Pasa Altos':
