@@ -327,7 +327,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.designconfig.setParameters(type, aprox, denorm, minord, maxord, qmax, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, wrg, gamma)
 
             if (self.check_plantilla.isChecked() and not g_delay) or (self.check_plantilla_GD.isChecked() and g_delay):
-                self.plotTemplate(type, Ap, ripple, Aa, wp, wa, wp2, wa2)
+                self.plotTemplate(type, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, gamma, wrg)
 
             # Calcular aproximación here
             # Falta el tema del orden min max, max q, etc
@@ -415,7 +415,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         pass  # TO-DO
 
-    def plotTemplate(self, type, Ap, ripple, Aa, wp, wa, wp2, wa2):
+    def plotTemplate(self, type, Ap, ripple, Aa, wp, wa, wp2, wa2, tau, gamma, wrg):
         if type == 'Pasa Bajos':
             x = [wp / 10, wp, wp]
             y = [Ap, Ap, Aa + 10]
@@ -460,6 +460,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             y = [Aa + 10, Ap, Ap]
             self.axes[0].semilogx(x, y, 'b--', color='#28658a', linewidth=2)
             self.axes[0].fill_between(x, y, np.max(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+        elif type == 'Retardo de Grupo':
+            x = [wrg/10, wrg, wrg]
+            y = [tau - (tau * gamma/100), tau - (tau * gamma/100), 0]
+            self.getPlotAxes('Retardo de Grupo').semilogx(x, y, 'b--', color='#28658a', linewidth=2)
+            self.getPlotAxes('Retardo de Grupo').fill_between(x, y, np.min(y), facecolor="none", edgecolor='#539ecd', hatch='X', linewidth=0)
+
         return
 
     def plotPolesAndZeros(self, z, p):
