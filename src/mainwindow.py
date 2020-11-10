@@ -221,14 +221,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filter_design.setFilterStages(self.filter_stages)
         filename = QFileDialog.getSaveFileName(self, "Exportar Archivo", "filter.pdf", "PDF (*.pdf)", "PDF (*.pdf)")[0]
         if len(filename) > 0:
-            #try:
-            self.filter_design.export(filename)
-            '''except:
+            try:
+                self.filter_design.export(filename)
+            except:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setWindowTitle("Error!")
                 msg.setText("Error crítico intentando exportar el archivo!")
-                msg.exec_()'''
+                msg.exec_()
         return
 
     def updateType(self):
